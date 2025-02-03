@@ -5,8 +5,6 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.hibernate.annotations.ManyToAny;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,20 +25,40 @@ public class UpdateDate implements Serializable {
 
 	@Column(nullable = false)
 	private Instant date;
-	@Column(nullable = false)
+
+	@Column(nullable = false, scale = 2)
 	private Float value;
-	
+
 	// connections
-	
+
 	@ManyToOne
 	@JoinColumn(name = "pot_id")
 	private Pot pot;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "transaction_id")
 	private Transaction transaction;
-	
-	
+
+	@ManyToOne
+	@JoinColumn(name = "old_current_balance_id")
+	private Account old_current_balance;
+
+	@ManyToOne
+	@JoinColumn(name = "old_income_id")
+	private Account old_income;
+
+	@ManyToOne
+	@JoinColumn(name = "old_expenses_id")
+	private Account old_expenses;
+
+	@ManyToOne
+	@JoinColumn(name = "budget_id")
+	private Budget budget;
+
+	@ManyToOne
+	@JoinColumn(name = "recurring_invoices_id")
+	private RecurringInvoices recurring_invoices;
+
 	public UpdateDate() {
 	}
 

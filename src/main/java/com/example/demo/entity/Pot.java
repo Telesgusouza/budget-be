@@ -26,7 +26,7 @@ public class Pot implements Serializable {
 	@Column(nullable = false)
 	private String title;
 
-	@Column(nullable = false)
+	@Column(nullable = false, scale = 2)
 	private Float monthlyAmount;
 	
 	@OneToMany(mappedBy = "pot",fetch = FetchType.EAGER)

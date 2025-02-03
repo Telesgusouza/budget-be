@@ -28,7 +28,7 @@ public class Transaction implements Serializable {
 	@Column(nullable = false)
 	private String name;
 
-	@Column(nullable = false)
+	@Column(nullable = false, scale = 2)
 	private Float transferValue;
 
 	@OneToMany(mappedBy = "transaction", fetch = FetchType.EAGER)
