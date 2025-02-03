@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +20,7 @@ public class Account implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private String id;
+	private UUID id;
 
 	@Column(nullable = false, scale = 2)
 	private Float currentBalance;
@@ -42,7 +43,7 @@ public class Account implements Serializable {
 	public Account() {
 	}
 
-	public Account(String id, Float currentBalance, Float income, Float expenses, List<UpdateDate> oldCurrentBalance,
+	public Account(UUID id, Float currentBalance, Float income, Float expenses, List<UpdateDate> oldCurrentBalance,
 			List<UpdateDate> oldIncome, List<UpdateDate> oldExpenses) {
 		super();
 		this.id = id;
@@ -54,11 +55,11 @@ public class Account implements Serializable {
 		this.oldExpenses = oldExpenses;
 	}
 
-	public String getId() {
+	public UUID getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(UUID id) {
 		this.id = id;
 	}
 
