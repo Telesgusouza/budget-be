@@ -9,6 +9,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Table(name = "tb_friend")
@@ -21,8 +23,13 @@ public class Friend implements Serializable {
 	private UUID id;
 
 	private String img;
+	
 	@Column(nullable = false)
 	private String name;
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Friend() {
 	}
