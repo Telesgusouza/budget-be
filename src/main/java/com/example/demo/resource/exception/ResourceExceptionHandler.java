@@ -3,9 +3,13 @@ package com.example.demo.resource.exception;
 import java.time.Instant;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.example.demo.service.exception.AuthenticationFailed;
+import com.example.demo.service.exception.ErrorCreatingToken;
+import com.example.demo.service.exception.ErrorLoggingIntoAccount;
 import com.example.demo.service.exception.ExceptionOfExistingEmail;
 import com.example.demo.service.exception.ResourceNotFoundException;
 
@@ -34,6 +38,50 @@ public class ResourceExceptionHandler {
 		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
 
 		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ErrorCreatingToken.class)
+	public ResponseEntity<StandardError> handleErrorCreatingToken(ErrorCreatingToken e, HttpServletRequest request) {
+
+		String error = "Error creating token";
+		Integer status = 400;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ErrorLoggingIntoAccount.class)
+	public ResponseEntity<StandardError> handleErrorLoggingIntoAccount(ErrorLoggingIntoAccount e,
+			HttpServletRequest request) {
+
+		String error = "Error Logging Into Account";
+		Integer status = 400;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(AuthenticationException.class)
+	public ResponseEntity<StandardError> handleAuthenticationException(AuthenticationException e,
+			HttpServletRequest request) {
+
+		String error = "Authentication Exception";
+		Integer status = 403;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+	}
+
+	// AuthenticationFailed
+	@ExceptionHandler(AuthenticationFailed.class)
+	public ResponseEntity<StandardError> handleAuthenticationFailed(AuthenticationFailed e,
+			HttpServletRequest request) {
+
+		String error = "Error authenticating account";
+		Integer status = 403;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return null;
 	}
 
 }

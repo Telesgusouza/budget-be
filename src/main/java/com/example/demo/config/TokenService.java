@@ -11,6 +11,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.example.demo.entity.User;
+import com.example.demo.service.exception.ErrorCreatingToken;
 
 @Service
 public class TokenService {
@@ -33,8 +34,8 @@ public class TokenService {
 			return token;
 			
 		} catch (JWTCreationException exception) {
-			// TODO: handle exception
-			throw new RuntimeException("Error while generating token", exception);
+			
+			throw new ErrorCreatingToken("Error while generating token. " + exception);
 		}
 	}
 	
