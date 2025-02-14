@@ -48,6 +48,7 @@ public class AuthorizationServiceTest {
 	@InjectMocks
 	private AuthorizationService authorizationService;
 
+	// login
 	@Test
 	@DisplayName("Logged in successfully")
 	public void loggedInSuccessfully() {
@@ -106,12 +107,10 @@ public class AuthorizationServiceTest {
 		User user = new User(UUID.randomUUID(), "", "test@gmail.com", "111111", "test_name", UserRole.USER);
 		String token = "my_token_123";
 
-		// Configurar os mocks
 		when(userRepository.findByLogin(data.login())).thenReturn(null);
 		when(userRepository.save(any(User.class))).thenReturn(user);
 		when(tokenService.generateToken(user)).thenReturn(token);
 
-		// Executar o teste
 		String result = this.authorizationService.register(data);
 		assertNotNull(result);
 		assertEquals(token, result);
@@ -123,7 +122,6 @@ public class AuthorizationServiceTest {
 
 		RegisterDTO data = new RegisterDTO("test@gmail.com", "11111", "test_name");
 
-		// Configurar os mocks
 		when(userRepository.findByLogin(data.login())).thenReturn(null);
 		assertThrows(InvalidField.class, () -> authorizationService.register(data));
 
@@ -135,7 +133,6 @@ public class AuthorizationServiceTest {
 
 		RegisterDTO data = new RegisterDTO("format_incorret.gmail.com", "111111", "test_name");
 
-		// Configurar os mocks
 		when(userRepository.findByLogin(data.login())).thenReturn(null);
 
 		assertThrows(InvalidField.class, () -> authorizationService.register(data));
@@ -143,3 +140,31 @@ public class AuthorizationServiceTest {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

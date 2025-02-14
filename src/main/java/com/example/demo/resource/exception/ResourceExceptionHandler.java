@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import com.example.demo.service.exception.AuthenticationFailed;
 import com.example.demo.service.exception.ErrorCreatingToken;
 import com.example.demo.service.exception.ErrorLoggingIntoAccount;
+import com.example.demo.service.exception.ErrorToken;
 import com.example.demo.service.exception.ExceptionOfExistingEmail;
 import com.example.demo.service.exception.ResourceNotFoundException;
+import com.example.demo.service.exception.TicketError;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -72,7 +74,6 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 	}
 
-	// AuthenticationFailed
 	@ExceptionHandler(AuthenticationFailed.class)
 	public ResponseEntity<StandardError> handleAuthenticationFailed(AuthenticationFailed e,
 			HttpServletRequest request) {
@@ -81,7 +82,27 @@ public class ResourceExceptionHandler {
 		Integer status = 403;
 		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
 
-		return null;
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ErrorToken.class)
+	public ResponseEntity<StandardError> handleErrorToken(ErrorToken e, HttpServletRequest request) {
+
+		String error = "Error with Token";
+		Integer status = 403;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(TicketError.class)
+	public ResponseEntity<StandardError> handleTicketError(TicketError e, HttpServletRequest request) {
+
+		String error = "Error with ticket";
+		Integer status = 400;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
 	}
 
 }

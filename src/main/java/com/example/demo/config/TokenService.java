@@ -12,6 +12,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.example.demo.entity.User;
 import com.example.demo.service.exception.ErrorCreatingToken;
+import com.example.demo.service.exception.ErrorToken;
 
 @Service
 public class TokenService {
@@ -22,7 +23,6 @@ public class TokenService {
 	public String generateToken(User user) {
 		
 		try {
-			
 			Algorithm algorithm = Algorithm.HMAC256(secret);
 			
 			String token = JWT.create()
@@ -51,9 +51,7 @@ public class TokenService {
 					.getSubject();
 			
 		} catch (Exception e) {
-			// TODO: handle exception
-			
-			return "";
+			throw new ErrorToken("Error validating token");
 		}
 	}
 	

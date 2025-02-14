@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -28,7 +29,10 @@ public class SecurityConfiguration {
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
 						.requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-						.anyRequest().permitAll() // mudar depois
+						
+						.requestMatchers("/api/v1/auth/home").permitAll()
+//						.requestMatchers("/api/v1/auth/secured").permitAll()
+						.anyRequest().authenticated() // mudar depois
 				)
 				.addFilterBefore(securityFilter, 
 						UsernamePasswordAuthenticationFilter.class)
