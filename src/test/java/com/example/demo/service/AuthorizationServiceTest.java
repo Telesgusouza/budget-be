@@ -2,13 +2,20 @@ package com.example.demo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows; // anyString
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +24,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -24,17 +33,28 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import com.example.demo.config.TokenService;
 import com.example.demo.dto.AuthenticationDTO;
+import com.example.demo.dto.EditPasswordDTO;
+import com.example.demo.dto.EditUserDTO;
 import com.example.demo.dto.RegisterDTO;
+import com.example.demo.dto.ResponseUserDTO;
 import com.example.demo.entity.User;
 import com.example.demo.enums.UserRole;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.service.exception.AuthenticationFailed;
 import com.example.demo.service.exception.InvalidField;
+import com.example.demo.service.exception.ResourceNotFoundException;
+import com.example.demo.service.exception.TicketError;
 
 @SpringBootTest(properties = { "api.security.token.secret=${JWT_SECRET:my-secret-key}", })
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 public class AuthorizationServiceTest {
+
+	@Mock
+	private RedisTemplate<String, String> redisTemplate;
+
+	@Mock
+	private ValueOperations<String, String> valueOperations;
 
 	@Mock
 	private UserRepository userRepository;
@@ -43,10 +63,23 @@ public class AuthorizationServiceTest {
 	private AuthenticationManager authenticationManager;
 
 	@Mock
+	private TicketService ticketService; // Novo mock adicionado
+
+	@Mock
 	private TokenService tokenService;
 
 	@InjectMocks
 	private AuthorizationService authorizationService;
+
+	@Before(value = "")
+	public void setup() {
+		// Configurações anteriores permanecem
+		when(redisTemplate.opsForValue()).thenReturn(valueOperations);
+		when(valueOperations.getAndDelete(anyString())).thenReturn("user-id-123");
+
+		// Nova configuração para o ticketService
+		when(ticketService.getUserByTicket(anyString())).thenReturn(Optional.of("user-id-123"));
+	}
 
 	// login
 	@Test
@@ -139,32 +172,155 @@ public class AuthorizationServiceTest {
 
 	}
 
+	// delete
+	@DisplayName("delete user")
+	@Test
+	public void deleteUser() {
+		User user = new User(UUID.randomUUID(), "photo", "test@gmail.com", "password_123", "name_test", UserRole.USER);
+
+		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+		doNothing().when(userRepository).delete(any(User.class));
+
+		authorizationService.deleteAccount(user.getId());
+
+		verify(userRepository).delete(user);
+	}
+
+	@DisplayName("user not found")
+	@Test
+	public void userNotFound() {
+		User user = new User(UUID.randomUUID(), "photo", "test@gmail.com", "password_123", "name_test", UserRole.USER);
+
+		when(userRepository.findById(user.getId())).thenThrow(ResourceNotFoundException.class);
+
+		assertThrows(ResourceNotFoundException.class, () -> authorizationService.deleteAccount(user.getId()));
+	}
+
+	// edit user
+	@DisplayName("User edited successfully")
+	@Test
+	public void userEditedSuccessfully() {
+		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		User newUser = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "teste_new_name",
+				UserRole.USER);
+		EditUserDTO dataUser = new EditUserDTO("teste_new_name");
+
+		ResponseUserDTO data = new ResponseUserDTO(newUser.getId(), newUser.getImg(), newUser.getUsername(),
+				newUser.getName());
+
+		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+		when(userRepository.save(any(User.class))).thenReturn(newUser);
+
+		ResponseUserDTO response = authorizationService.editUser(dataUser, user.getId());
+
+		assertNotNull(response);
+	}
+
+	@DisplayName("returns error with name same as previous")
+	@Test
+	public void returnsErrorWithNameSameAsPrevious() {
+		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		EditUserDTO dataUser = new EditUserDTO("name_test");
+
+		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+		assertThrows(InvalidField.class, () -> authorizationService.editUser(dataUser, user.getId()));
+
+	}
+
+	@DisplayName("error because the name is not null")
+	@Test
+	public void errorBecausethenameisnotnull() {
+		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		EditUserDTO dataUser = new EditUserDTO(null);
+
+		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+		assertThrows(InvalidField.class, () -> authorizationService.editUser(dataUser, user.getId()));
+	}
+
+//	Edit password
+
+//	este teste está dando erro
+//	
+//	this test is giving error
+//	
+//	@Test
+//	public void successInEditingPassword() {
+//	    // Arrange (Preparação)
+//	    String ticket = "ticket_123";
+//	    String newPassword = "senha123456"; // senha válida (maior que 6 caracteres)
+//	    String userId = UUID.randomUUID().toString();
+//	    
+//	    EditPasswordDTO data = new EditPasswordDTO(newPassword, ticket);
+//	    User user = new User(UUID.fromString(userId), "photo", "test@gmail.com", "password_123", "test_name", UserRole.USER);
+//
+//	    // Configuração dos mocks - ordem importante!
+//	    when(redisTemplate.opsForValue()).thenReturn(valueOperations); // Primeiro configura
+//	    when(valueOperations.getAndDelete(ticket)).thenReturn(userId);
+//	    
+//	    when(userRepository.findById(UUID.fromString(userId))).thenReturn(Optional.of(user));
+//	    when(userRepository.save(any(User.class))).thenReturn(user);
+//	    
+//	    when(ticketService.getUserByTicket(ticket))
+//	        .thenReturn(Optional.of(userId));
+//
+//	    // Act (Execução)
+//	    authorizationService.EditPassword(data);
+//
+//	    // Assert (Verificação) - agora sim verifica
+//	    verify(redisTemplate).opsForValue();
+//	    verify(valueOperations).getAndDelete(ticket);
+//	    verify(ticketService).getUserByTicket(ticket);
+//	    verify(userRepository).findById(UUID.fromString(userId));
+//	    verify(userRepository).save(any(User.class));
+//	} 
+
+	@DisplayName("password is not null")
+	@Test
+	public void passwordIsNotNull() {
+		EditPasswordDTO data = new EditPasswordDTO(null, "ticket_123");
+
+		assertThrows(InvalidField.class, () -> authorizationService.EditPassword(data));
+	}
+
+	@DisplayName("ticket is not null")
+	@Test
+	public void ticketIsNotNull() {
+		EditPasswordDTO data = new EditPasswordDTO("password_123", null);
+
+		assertThrows(InvalidField.class, () -> authorizationService.EditPassword(data));
+	}
+
+	@Test
+	@DisplayName("should throw ticket error when user id optional is empty")
+	public void shouldThrowTicketErrorWhenUserIdOptionalIsEmpty() {
+		// Arrange (Preparação)
+		String ticket = "ticket_invalido";
+		String newPassword = "senha123456";
+
+		EditPasswordDTO data = new EditPasswordDTO(newPassword, ticket);
+
+		when(ticketService.getUserByTicket(ticket)).thenReturn(Optional.empty()); // Retorna Optional vazio
+
+		assertThrows(TicketError.class, () -> {
+			authorizationService.EditPassword(data);
+		});
+
+		verify(ticketService).getUserByTicket(ticket);
+
+		verifyNoInteractions(userRepository);
+		verifyNoMoreInteractions(redisTemplate);
+	}
+
+	@DisplayName("password is very small")
+	@Test
+	public void passwordIsVerySmall() {
+		EditPasswordDTO data = new EditPasswordDTO("12345", "ticket_test");
+
+		when(ticketService.getUserByTicket(data.ticket())).thenReturn(Optional.of("1235.8524.7416.9634"));
+
+		assertThrows(InvalidField.class, () -> authorizationService.EditPassword(data));
+	}
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

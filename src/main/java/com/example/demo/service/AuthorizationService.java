@@ -112,30 +112,21 @@ public class AuthorizationService implements UserDetailsService {
 	}
 
 	public ResponseUserDTO editUser(EditUserDTO data, UUID id) {
+		Optional<User> optionalUser = this.userRepository.findById(id);
+		User user = optionalUser.orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-		try {
-
-			Optional<User> optionalUser = this.userRepository.findById(id);
-			User user = optionalUser.orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
-			if (data.name() == null && data.photo() == null) {
-				throw new InvalidField("No field to be changed");
-			}
-
-			if (data.name() != null) {
-				user.setName(data.name());
-			}
-			if (data.photo() != null) {
-				user.setImg(data.photo());
-			}
-
-			User userEdit = this.userRepository.save(user);
-
-			return new ResponseUserDTO(id, userEdit.getImg(), userEdit.getUsername(), userEdit.getName());
-
-		} catch (Exception e) {
-			throw new ResourceNotFoundException("An error occurred while editing user");
+		if (user.getName().equals(data.name())) {
+			throw new InvalidField("name cannot be the same as the previous name");
 		}
+
+		if (data.name() != null) {
+			user.setName(data.name());
+		} else {
+			throw new InvalidField("name is not null");
+		}
+
+		User userEdit = this.userRepository.save(user);
+		return new ResponseUserDTO(id, userEdit.getImg(), userEdit.getUsername(), userEdit.getName());
 
 	}
 
