@@ -11,6 +11,7 @@ import org.thymeleaf.context.Context;
 
 import com.example.demo.entity.Mail;
 import com.example.demo.repositories.EmailRepository;
+import com.example.demo.service.exception.EmailException;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.AddressException;
@@ -53,13 +54,17 @@ public class EmailService implements EmailRepository {
 			mailSender.send(message);
 
 		} catch (RuntimeException error) {
+
 			System.out.println("Erro " + error);
+			throw new EmailException("Unknown error"); 
 		} catch (AddressException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			throw new EmailException("error with recipient");
 		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
+			throw new EmailException("Error sending email");
 		}
 
 	}

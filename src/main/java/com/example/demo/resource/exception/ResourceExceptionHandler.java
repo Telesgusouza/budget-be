@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.example.demo.service.exception.AuthenticationFailed;
+import com.example.demo.service.exception.EmailException;
 import com.example.demo.service.exception.ErrorCreatingToken;
 import com.example.demo.service.exception.ErrorLoggingIntoAccount;
 import com.example.demo.service.exception.ErrorToken;
 import com.example.demo.service.exception.ExceptionOfExistingEmail;
+import com.example.demo.service.exception.InvalidField;
 import com.example.demo.service.exception.ResourceNotFoundException;
 import com.example.demo.service.exception.TicketError;
 
@@ -103,6 +105,28 @@ public class ResourceExceptionHandler {
 		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
 
 		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(InvalidField.class)
+	public ResponseEntity<StandardError> handleInvalidField(InvalidField e, HttpServletRequest request) {
+
+		String error = "Invalid field";
+		Integer status = 400;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+
+	}
+	
+	@ExceptionHandler(EmailException.class)
+	public ResponseEntity<StandardError> handleEmailException(EmailException e, HttpServletRequest request) {
+
+		String error = "Email exception";
+		Integer status = 500;
+		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
+
+		return ResponseEntity.status(status).body(err);
+
 	}
 
 }
