@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<dirs>
+    <entry loc="/media/gustavo/DADOS/PROGRAMACAO/linuxapps/sts-4.21.0.RELEASE/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.linux.x86_64_17.0.9.v20231028-0858" stamp="1701454633000"/>
+    <entry loc="/home/gustavo/.sdkman/candidates/java/21.0.2-open" stamp="1710457496000"/>
+    <entry loc="/usr/lib/jvm/java-17-openjdk-amd64" stamp="1727999219852"/>
+    <entry loc="/media/gustavo/DADOS/PROGRAMACAO/linuxapps/sts-4.21.0.RELEASE/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.linux.x86_64_17.0.9.v20231028-0858/jre" stamp="1701454633000"/>
+    <entry loc="/usr/lib/jvm/java-21-openjdk-amd64" stamp="1727999200800"/>
+    <entry loc="/usr/lib/jvm/java-11-openjdk-amd64" stamp="1727999240099"/>
+    <entry loc="/home/gustavo/.sdkman/candidates/java/17.0.1-zulu" stamp="1634744452000"/>
+</dirs>
