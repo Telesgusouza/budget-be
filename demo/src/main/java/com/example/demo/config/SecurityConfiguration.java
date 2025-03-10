@@ -22,22 +22,22 @@ public class SecurityConfiguration {
 	@Autowired
 	private SecurityFilter securityFilter;
 
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-		return httpSecurity.csrf(csrf -> csrf.disable())
-				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-						.requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
-						
-						.requestMatchers("/api/v1/auth/home").permitAll()
-//						.requestMatchers("/api/v1/auth/secured").permitAll()
-						.anyRequest().authenticated() // mudar depois
-				)
-				.addFilterBefore(securityFilter, 
-						UsernamePasswordAuthenticationFilter.class)
-				.build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+            .csrf(csrf -> csrf.disable())
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/html").permitAll()
+                .requestMatchers(HttpMethod.PATCH, "/api/v1/auth/password").permitAll()
+                .requestMatchers("/api/v1/auth/home").permitAll()
+                .anyRequest().authenticated()
+            )
+            .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)

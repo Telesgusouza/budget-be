@@ -1,7 +1,5 @@
 package com.example.demo.service;
 
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -32,10 +30,10 @@ public class EmailService implements EmailRepository {
 	}
 
 	@Override
-	public void sendHTMLEmail(Mail mail, UUID id) {
+	public void sendHTMLEmail(Mail mail) {
 		try {
 
-			String ticket = ticketService.buildAndSaveTicket(id);
+			String ticket = ticketService.buildAndSaveTicket(mail.getTo());
 
 			Context context = new Context();
 			context.setVariable("username", mail.getTo());
@@ -56,13 +54,13 @@ public class EmailService implements EmailRepository {
 		} catch (RuntimeException error) {
 
 			System.out.println("Erro " + error);
-			throw new EmailException("Unknown error"); 
+			throw new EmailException("Unknown error");
 		} catch (AddressException e) {
-			
+
 			e.printStackTrace();
 			throw new EmailException("error with recipient");
 		} catch (MessagingException e) {
-			
+
 			e.printStackTrace();
 			throw new EmailException("Error sending email");
 		}

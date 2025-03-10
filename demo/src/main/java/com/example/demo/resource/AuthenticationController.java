@@ -22,6 +22,7 @@ import com.example.demo.entity.User;
 import com.example.demo.resource.exception.StandardError;
 import com.example.demo.service.AuthorizationService;
 import com.example.demo.service.EmailService;
+import com.example.demo.service.S3Service;
 import com.example.demo.service.exception.AuthenticationFailed;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,19 +43,13 @@ public class AuthenticationController {
 	@Autowired
 	private EmailService emailService;
 
-	@Operation(
-			summary = "log into your account", 
-			description = "Log user into your account", 
-			responses = {
-			
-					@ApiResponse(
-					responseCode = "200", 
-					description = "User logged in successfully", 
-					content = @Content(
-							mediaType = "application/json", 
-							schema = @Schema(
-									implementation = ResponseTokenDTO.class))),
-			
+	@Autowired
+	private S3Service s3Service;
+
+	@Operation(summary = "log into your account", description = "Log user into your account", responses = {
+
+			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseTokenDTO.class))),
+
 			@ApiResponse(responseCode = "403", description = "Error authenticating account", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
 
 			@ApiResponse(responseCode = "403", description = "Incorrect password", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
@@ -88,30 +83,12 @@ public class AuthenticationController {
 		return ResponseEntity.status(201).body(new ResponseTokenDTO(token));
 	}
 
-	@Operation(
-			summary = "get info user",
-			description = "bring basic user information",
-			responses = {
-					@ApiResponse(
-							responseCode = "200",
-							description = "data recovered successfully",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = ResponseUserDTO.class))
-							),
-					
-					@ApiResponse(
-							responseCode = "403",
-							description = "User not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))
-							)
-					
-					
-					
-			}
-			)
+	@Operation(summary = "get info user", description = "bring basic user information", responses = {
+			@ApiResponse(responseCode = "200", description = "data recovered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseUserDTO.class))),
+
+			@ApiResponse(responseCode = "403", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
+
+	})
 	@GetMapping
 	public ResponseEntity<ResponseUserDTO> getUser(@AuthenticationPrincipal User user) {
 
@@ -163,37 +140,14 @@ public class AuthenticationController {
 //		return ResponseEntity.status(200).body(responseUser);
 //	}
 
-	
-	@Operation(
-			summary = "delete user",
-			description = "operation that deletes the user account",
-			responses = {
-					@ApiResponse(
-							responseCode = "204",
-							description = "account deleted successfully",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = Void.class))
-							),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "User not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))
-							),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "error when deleting user",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))
-							)
-					
-			}
-			)
+	@Operation(summary = "delete user", description = "operation that deletes the user account", responses = {
+			@ApiResponse(responseCode = "204", description = "account deleted successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+
+			@ApiResponse(responseCode = "400", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "error when deleting user", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
+
+	})
 	@DeleteMapping
 	public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal User user) {
 		this.authorizationService.deleteAccount(user.getId());
@@ -201,35 +155,12 @@ public class AuthenticationController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@Operation(
-			summary = "Edit user",
-			description = "operation to edit the user name",
-			responses = {
-					@ApiResponse(
-							responseCode = "200",
-							description = "operation to edit the user name",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = ResponseUserDTO.class))
-							),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "name cannot be the same as the previous name",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = Void.class))
-							),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "name is not null",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = Void.class))
-							),
-			}
-		)
+	@Operation(summary = "Edit user", description = "operation to edit the user name", responses = {
+			@ApiResponse(responseCode = "200", description = "operation to edit the user name", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseUserDTO.class))),
+
+			@ApiResponse(responseCode = "400", description = "name cannot be the same as the previous name", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+
+			@ApiResponse(responseCode = "400", description = "name is not null", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))), })
 	@PatchMapping
 	public ResponseEntity<ResponseUserDTO> editUser(@RequestBody EditUserDTO data, @AuthenticationPrincipal User user) {
 
@@ -238,97 +169,39 @@ public class AuthenticationController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@Operation(
-			summary = "ticket to email",
-			description = "send the ticket to email",
-			responses = {
-					@ApiResponse(
-							responseCode = "204",
-							description = "email sent successfully",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = Void.class))),
+	@Operation(summary = "ticket to email", description = "send the ticket to email", responses = {
+			@ApiResponse(responseCode = "204", description = "email sent successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
 
-					@ApiResponse(
-							responseCode = "400",
-							description = "error with recipient",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "Error sending email",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "Unknown error",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class)))
-					
-			}
-			)
+			@ApiResponse(responseCode = "400", description = "error with recipient", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "Error sending email", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "Unknown error", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class)))
+
+	})
 	// edit password
 	@PostMapping("/html")
-	public ResponseEntity<?> postHTMLEmail(@RequestBody Mail mail, @AuthenticationPrincipal User user) {
+	public ResponseEntity<?> postHTMLEmail(@RequestBody Mail mail) {
 
-		this.emailService.sendHTMLEmail(mail, user.getId());
+//		this.emailService.sendHTMLEmail(mail, user.getId());
+		this.emailService.sendHTMLEmail(mail);
 		return ResponseEntity.noContent().build();
 	}
 
-	@Operation(
-			summary = "Edit password",
-			description = "edit user account password",
-			responses = {
-					@ApiResponse(
-							responseCode = "204",
-							description = "password edited successfully",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = Void.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "Password cannot be null",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
+	@Operation(summary = "Edit password", description = "edit user account password", responses = {
+			@ApiResponse(responseCode = "204", description = "password edited successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
 
-					@ApiResponse(
-							responseCode = "400",
-							description = "invalid ticket",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "invalid ticket",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "the password is very short, minimum 6 characters",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "User not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(implementation = StandardError.class))),
-					
-			}
-			)
+			@ApiResponse(responseCode = "400", description = "Password cannot be null", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "invalid ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "invalid ticket", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "the password is very short, minimum 6 characters", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
 	@PatchMapping("/password")
 	public ResponseEntity<?> editPassword(@RequestBody @Valid EditPasswordDTO data) {
 
