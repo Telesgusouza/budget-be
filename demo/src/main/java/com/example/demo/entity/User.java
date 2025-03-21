@@ -1,11 +1,14 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.hibernate.annotations.BatchSize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,9 +17,11 @@ import com.example.demo.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Table(name = "tb_user")
@@ -51,9 +56,10 @@ public class User implements UserDetails, Serializable {
 //	@BatchSize(size = 10)
 //	private List<Pot> pots = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-//	@BatchSize(size = 10)
-//	private List<Friend> friends = new ArrayList<>();
+//	@JsonIgnore
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+	@BatchSize(size = 10)
+	private List<Friend> friends = new ArrayList<>();
 
 //	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 //	private Account account;
@@ -72,6 +78,17 @@ public class User implements UserDetails, Serializable {
 		this.password = password;
 		this.name = name;
 		this.role = role;
+	}
+
+	public User(UUID id, String img, String login, String password, String name, UserRole role, List<Friend> friends) {
+		super();
+		this.id = id;
+		this.img = img;
+		this.login = login;
+		this.password = password;
+		this.name = name;
+		this.role = role;
+		this.friends = friends;
 	}
 
 //	public User(UUID id, String img, String login, String password, String name, UserRole role,
@@ -186,13 +203,13 @@ public class User implements UserDetails, Serializable {
 		this.login = login;
 	}
 
-//	public List<Friend> getFriends() {
-//		return friends;
-//	}
-//
-//	public void setFriends(List<Friend> friends) {
-//		this.friends = friends;
-//	}
+	public List<Friend> getFriends() {
+		return friends.stream().limit(8).collect(Collectors.toList());
+	}
+
+	public void setFriends(List<Friend> friends) {
+		this.friends = friends;
+	}
 
 //	public void addFriend(Friend friend) {
 //		this.friends.add(friend);

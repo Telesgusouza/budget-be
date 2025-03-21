@@ -129,13 +129,12 @@ public class ResourceExceptionHandler {
 		return ResponseEntity.status(status).body(err);
 
 	}
-	
-	// ResourceAlreadyExists
+
 	@ExceptionHandler(ResourceAlreadyExists.class)
 	public ResponseEntity<StandardError> handleResourceAlreadyExists(EmailException e, HttpServletRequest request) {
 
 		String error = "Resource already exists";
-		Integer status = 500;
+		Integer status = 409;
 		StandardError err = new StandardError(Instant.now(), status, error, e.getMessage(), request.getRequestURI());
 
 		return ResponseEntity.status(status).body(err);

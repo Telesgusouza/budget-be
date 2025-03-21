@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.amazonaws.services.kms.model.DisabledException;
 import com.example.demo.config.TokenService;
 import com.example.demo.dto.AuthenticationDTO;
 import com.example.demo.dto.EditPasswordDTO;
@@ -70,7 +71,9 @@ public class AuthorizationService implements UserDetailsService {
 		} catch (AccountStatusException e) {
 
 			throw new AuthenticationFailed("Account deactivated or blocked");
-		}
+		} catch (DisabledException e) { // AWS KMS exception
+	        throw new AuthenticationFailed("Account deactivated or blocked");
+	    }
 	}
 
 	public String register(RegisterDTO data) {

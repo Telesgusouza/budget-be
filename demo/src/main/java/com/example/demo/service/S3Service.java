@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,7 +89,7 @@ public class S3Service {
 			MetadataResponseDTO metadataResponse = new MetadataResponseDTO("200", "file delete successfully", "1");
 			ResultResponseDTO response = new ResultResponseDTO(metadataResponse, "" + id);
 
-			user.setImg(null);
+			user.setImg("");
 			userRepository.save(user);
 
 			return response;
@@ -100,12 +101,13 @@ public class S3Service {
 		}
 	}
 
+	@Cacheable("get photo s3")
 	public ResponseUrlPhotoDTO getPhoto(UUID id) {
-		
-	    if (id == null) {
-	        throw new ResourceNotFoundException("ID não pode ser nulo");
-	    }
-		
+
+		if (id == null) {
+			throw new ResourceNotFoundException("ID não pode ser nulo");
+		}
+
 		try {
 			return new ResponseUrlPhotoDTO("" + s3Cliente.getUrl(bucketName, "" + id));
 		} catch (Exception e) {
