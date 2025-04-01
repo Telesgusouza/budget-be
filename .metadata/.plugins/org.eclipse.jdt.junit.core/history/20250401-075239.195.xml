@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="FriendServiceTest" project="demo" tests="6" started="6" failures="0" errors="1" ignored="0">
+  <testsuite name="com.example.demo.service.FriendServiceTest" time="1.414" displayname="FriendServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]">
+    <testcase name="veryShortName" classname="com.example.demo.service.FriendServiceTest" time="1.336" displayname="very short name" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:veryShortName()]"/>
+    <testcase name="newNameCannotBeTheSameAsThePreviousOne" classname="com.example.demo.service.FriendServiceTest" time="0.033" displayname="new name cannot be the same as the previous one" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:newNameCannotBeTheSameAsThePreviousOne()]"/>
+    <testcase name="addedFriendSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.007" displayname="added friend successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:addedFriendSuccessfully()]"/>
+    <testcase name="friendAlreadyExists" classname="com.example.demo.service.FriendServiceTest" time="0.005" displayname="friend already exists" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendAlreadyExists()]"/>
+    <testcase name="friendDeletedSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.022" displayname="friend deleted successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendDeletedSuccessfully()]">
+      <error>com.example.demo.service.exception.ResourceNotFoundException: Rource not found. id an error occurred when deleting a friend
+	at com.example.demo.service.FriendService.deleteFriend(FriendService.java:99)
+	at com.example.demo.service.FriendServiceTest.friendDeletedSuccessfully(FriendServiceTest.java:200)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+</error>
+    </testcase>
+    <testcase name="editedSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.007" displayname="edited successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:editedSuccessfully()]"/>
+  </testsuite>
+</testrun>

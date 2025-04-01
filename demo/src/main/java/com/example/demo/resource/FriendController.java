@@ -30,12 +30,14 @@ import com.example.demo.resource.exception.StandardError;
 import com.example.demo.service.FriendService;
 import com.example.demo.service.exception.AuthenticationFailed;
 import com.example.demo.service.exception.ErrorLoggingIntoAccount;
+import com.example.demo.service.exception.ResourceAlreadyExists;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
@@ -68,8 +70,14 @@ public class FriendController {
 			}
 			)
 	@PostMapping
-	public ResponseEntity<Friend> addNewFriend(@AuthenticationPrincipal User user, @RequestBody FriendDTO data) {
+	public ResponseEntity<Friend> addNewFriend(
+			@AuthenticationPrincipal User user, 
+			@Valid @RequestBody FriendDTO data) {
 
+		if (data == null) {
+			throw new ResourceAlreadyExists("data cannot be null");
+		}
+		
 		Friend friend = friendService.addNewFriend(user, data);
 
 		return ResponseEntity.status(203).body(friend);

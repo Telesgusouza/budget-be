@@ -204,7 +204,7 @@ public class User implements UserDetails, Serializable {
 	}
 
 	public List<Friend> getFriends() {
-		return friends.stream().limit(8).collect(Collectors.toList());
+		return friends;
 	}
 
 	public void setFriends(List<Friend> friends) {

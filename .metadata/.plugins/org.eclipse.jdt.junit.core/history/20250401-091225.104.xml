@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="FriendServiceTest" project="demo" tests="7" started="7" failures="1" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.FriendServiceTest" time="1.314" displayname="FriendServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]">
+    <testcase name="veryShortName" classname="com.example.demo.service.FriendServiceTest" time="1.224" displayname="very short name" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:veryShortName()]"/>
+    <testcase name="newNameCannotBeTheSameAsThePreviousOne" classname="com.example.demo.service.FriendServiceTest" time="0.029" displayname="new name cannot be the same as the previous one" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:newNameCannotBeTheSameAsThePreviousOne()]"/>
+    <testcase name="addedFriendSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.007" displayname="added friend successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:addedFriendSuccessfully()]"/>
+    <testcase name="friendAlreadyExists" classname="com.example.demo.service.FriendServiceTest" time="0.006" displayname="friend already exists" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendAlreadyExists()]"/>
+    <testcase name="friendNotFound" classname="com.example.demo.service.FriendServiceTest" time="0.028" displayname="friend not found" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendNotFound()]">
+      <failure>
+        <expected>class com.example.demo.service.exception.ResourceNotFoundException</expected>
+        <actual>class org.mockito.exceptions.misusing.PotentialStubbingProblem</actual>
+        org.opentest4j.AssertionFailedError: Unexpected exception type thrown, expected: &lt;com.example.demo.service.exception.ResourceNotFoundException&gt; but was: &lt;org.mockito.exceptions.misusing.PotentialStubbingProblem&gt;
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:67)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3128)
+	at com.example.demo.service.FriendServiceTest.friendNotFound(FriendServiceTest.java:218)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+Caused by: org.mockito.exceptions.misusing.PotentialStubbingProblem: 
+Strict stubbing argument mismatch. Please check:
+ - this invocation of 'existsById' method:
+    friendRepository.existsById(
+    294c04f8-25c5-4b90-862e-057fde43bf73
+);
+    -&gt; at com.example.demo.service.FriendService.deleteFriend(FriendService.java:74)
+ - has following stubbing(s) with different arguments:
+    1. friendRepository.existsById(
+    58e10e26-8685-4d46-b990-9ab19e26f66a
+);
+      -&gt; at com.example.demo.service.FriendServiceTest.friendNotFound(FriendServiceTest.java:216)
+Typically, stubbing argument mismatch indicates user mistake when writing tests.
+Mockito fails early so that you can debug potential problem easily.
+However, there are legit scenarios when this exception generates false negative signal:
+  - stubbing the same method multiple times using 'given().will()' or 'when().then()' API
+    Please use 'will().given()' or 'doReturn().when()' API for stubbing.
+  - stubbed method is intentionally invoked with different arguments by code under test
+    Please use default or 'silent' JUnit Rule (equivalent of Strictness.LENIENT).
+For more information see javadoc for PotentialStubbingProblem class.
+	at com.example.demo.service.FriendService.deleteFriend(FriendService.java:74)
+	at com.example.demo.service.FriendServiceTest.lambda$3(FriendServiceTest.java:219)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
+	... 6 more
+
+
+      </failure>
+    </testcase>
+    <testcase name="friendDeletedSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.01" displayname="friend deleted successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendDeletedSuccessfully()]"/>
+    <testcase name="editedSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="0.005" displayname="edited successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:editedSuccessfully()]"/>
+  </testsuite>
+</testrun>

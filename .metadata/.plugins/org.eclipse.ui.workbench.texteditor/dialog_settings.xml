@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="@Patch"/>
+		<item key="selection" value="setFrien"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="setfrien"/>
+			<item value="friend"/>
+			<item value="friends"/>
+			<item value="DisabledException"/>
+			<item value="accountdea"/>
+			<item value="ResourceNotFoundException"/>
+			<item value="ResourceAlreadyExists"/>
+			<item value="InvalidField"/>
 			<item value="@Patch"/>
+			<item value="@delete"/>
+			<item value="id"/>
+			<item value="html"/>
 			<item value="file"/>
 			<item value="patch"/>
 			<item value="SecurityFilter"/>
-			<item value="AuthenticationPrincipal"/>
-			<item value="GetMapping"/>
-			<item value="@GetMapping"/>
-			<item value="AuthenticationDTO"/>
-			<item value="springdoc"/>
-			<item value="mail"/>
-			<item value="jwt"/>
-			<item value="security"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="611"/>
-		<item key="DIALOG_Y_ORIGIN" value="472"/>
+		<item key="DIALOG_X_ORIGIN" value="1490"/>
+		<item key="DIALOG_Y_ORIGIN" value="117"/>
 		<item key="DIALOG_WIDTH" value="335"/>
-		<item key="DIALOG_HEIGHT" value="432"/>
+		<item key="DIALOG_HEIGHT" value="446"/>
 		<item key="DIALOG_FONT_NAME" value="1|Ubuntu|10.0|0|GTK|1|"/>
 	</section>
 </section>

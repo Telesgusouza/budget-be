@@ -56,7 +56,7 @@ public class FriendService {
 		Friend requestFriend = requestFriendOptional
 				.orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
 
-		if (data.name() == requestFriend.getName()) {
+		if (data.name().equals(requestFriend.getName())) {
 			throw new InvalidField("new name cannot be the same as the previous one");
 		}
 
@@ -75,29 +75,20 @@ public class FriendService {
 			throw new ResourceNotFoundException("friend not found");
 		}
 
-		try {
+		Optional<Friend> requestFriend = this.friendRepository.findById(data.id());
 
-			Optional<Friend> requestFriend = this.friendRepository.findById(data.id());
+		Friend friend = requestFriend.orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
 
-			Friend friend = requestFriend.orElseThrow(() -> new ResourceNotFoundException("Friend not found"));
+		boolean existFriend = user.getFriends().stream().anyMatch(obj -> obj.getId().equals(data.id()));
 
-			boolean existFriend = user.getFriends().stream().anyMatch(obj -> obj.getId().equals(data.id()));
-
-			if (!existFriend) {
-				throw new ResourceAlreadyExists("Friend does not exist in list");
-			}
-
-			user.getFriends().removeIf(obj -> obj.getId().equals(friend.getId()));
-			this.friendRepository.delete(friend);
-
-			userRepository.save(user);
-
-		} catch (Exception e) {
-
-			e.printStackTrace();
-
-			throw new ResourceNotFoundException("an error occurred when deleting a friend");
+		if (!existFriend) {
+			throw new ResourceAlreadyExists("Friend does not exist in list");
 		}
+
+		user.getFriends().removeIf(obj -> obj.getId().equals(friend.getId()));
+		this.friendRepository.delete(friend);
+
+		userRepository.save(user);
 
 	}
 

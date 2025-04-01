@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="FriendServiceTest" project="demo" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.FriendServiceTest" time="2.286" displayname="FriendServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]">
+    <testcase name="addedFriendSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="2.286" displayname="added friend successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:addedFriendSuccessfully()]"/>
+  </testsuite>
+</testrun>
