@@ -52,11 +52,10 @@ public class User implements UserDetails, Serializable {
 //	@BatchSize(size = 10)
 //	private List<Transaction> transaction = new ArrayList<>();
 //
-//	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
-//	@BatchSize(size = 10)
-//	private List<Pot> pots = new ArrayList<>();
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+	@BatchSize(size = 10)
+	private List<Pot> pots = new ArrayList<>();
 
-//	@JsonIgnore
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
 	@BatchSize(size = 10)
 	private List<Friend> friends = new ArrayList<>();
@@ -80,17 +79,6 @@ public class User implements UserDetails, Serializable {
 		this.role = role;
 	}
 
-	public User(UUID id, String img, String login, String password, String name, UserRole role, List<Friend> friends) {
-		super();
-		this.id = id;
-		this.img = img;
-		this.login = login;
-		this.password = password;
-		this.name = name;
-		this.role = role;
-		this.friends = friends;
-	}
-
 //	public User(UUID id, String img, String login, String password, String name, UserRole role,
 //			List<Transaction> transaction, List<Pot> pots, Account account, Budget budget) {
 //		super();
@@ -105,6 +93,19 @@ public class User implements UserDetails, Serializable {
 //		this.account = account;
 //		this.budget = budget;
 //	}
+
+	public User(UUID id, String img, String login, String password, String name, UserRole role, List<Pot> pots,
+			List<Friend> friends) {
+		super();
+		this.id = id;
+		this.img = img;
+		this.login = login;
+		this.password = password;
+		this.name = name;
+		this.role = role;
+		this.pots = pots;
+		this.friends = friends;
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -162,15 +163,15 @@ public class User implements UserDetails, Serializable {
 //	public void setTransaction(List<Transaction> transaction) {
 //		this.transaction = transaction;
 //	}
-//
-//	public List<Pot> getPots() {
-//		return pots;
-//	}
-//
-//	public void setPots(List<Pot> pots) {
-//		this.pots = pots;
-//	}
-//
+
+	public List<Pot> getPots() {
+		return pots;
+	}
+
+	public void setPots(List<Pot> pots) {
+		this.pots = pots;
+	}
+
 //	public Account getAccount() {
 //		return account;
 //	}
@@ -210,11 +211,6 @@ public class User implements UserDetails, Serializable {
 	public void setFriends(List<Friend> friends) {
 		this.friends = friends;
 	}
-
-//	public void addFriend(Friend friend) {
-//		this.friends.add(friend);
-//		friend.setUser(this); // Garante que o id_user seja definido
-//	}
 
 //	@Override
 //	public String toString() {

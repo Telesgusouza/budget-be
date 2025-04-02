@@ -1,0 +1,34 @@
+package com.example.demo.entity;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
+
+import org.hibernate.annotations.BatchSize;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+
+@Table(name = "tb_pot")
+@Entity(name = "tb_pot")
+public class Pot implements Serializable {
+	private static final long serialVersionUID = -7998685760951034718L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private UUID id;
+	
+	private String title;
+	
+	private Float monthlyAmount;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+	@BatchSize(size = 10)
+	private List<UpdateDate> update;
+	
+}

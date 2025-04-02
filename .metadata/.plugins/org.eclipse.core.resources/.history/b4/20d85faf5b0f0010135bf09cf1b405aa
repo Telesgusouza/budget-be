@@ -1,0 +1,28 @@
+package com.example.demo.entity;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.UUID;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Table(name = "tb_pot")
+@Entity(name = "tb_pot")
+public class Pot implements Serializable {
+	private static final long serialVersionUID = -7998685760951034718L;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private UUID id;
+	
+	private String title;
+	
+	private Float monthlyAmount;
+	
+	private List<UpdateDate> update;
+	
+}

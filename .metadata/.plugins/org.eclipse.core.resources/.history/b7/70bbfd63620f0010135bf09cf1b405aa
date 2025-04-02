@@ -1,0 +1,60 @@
+package com.example.demo.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.Pot;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+
+@Service
+public class PotService {
+
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private PotRepository potRepository;
+	
+	@Autowired
+	private UpdateDateRepository updateDateRepository;
+	
+	private void newPot(PotDTO data) {
+		
+		Pot pot = new Pot(null, null, null, null);
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
