@@ -48,12 +48,7 @@ public class AuthenticationController {
 
 	@Operation(summary = "log into your account", description = "Log user into your account", responses = {
 
-			@ApiResponse(
-					responseCode = "200", 
-					description = "User logged in successfully", 
-					content = @Content(
-							mediaType = "application/json", 
-							schema = @Schema(implementation = ResponseTokenDTO.class))),
+			@ApiResponse(responseCode = "200", description = "User logged in successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseTokenDTO.class))),
 
 			@ApiResponse(responseCode = "403", description = "Error authenticating account", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
 
@@ -161,13 +156,6 @@ public class AuthenticationController {
 	})
 	@DeleteMapping
 	public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal User user) {
-
-		System.out.println();
-
-		System.out.println("=======================");
-		System.out.println(user);
-
-		System.out.println();
 
 		this.authorizationService.deleteAccount(user.getId());
 

@@ -103,7 +103,8 @@ public class FriendController {
 					
 			})
 	@GetMapping
-	public ResponseEntity<ResponseListFriendDTO> getListFriends(@AuthenticationPrincipal User user,
+	public ResponseEntity<ResponseListFriendDTO> getListFriends(
+			@AuthenticationPrincipal User user,
 			@RequestParam(defaultValue = "0") @Min(0) int page,
 			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
 

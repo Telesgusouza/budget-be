@@ -1,15 +1,17 @@
 package com.example.demo.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import org.hibernate.annotations.BatchSize;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,30 +33,37 @@ public class Pot implements Serializable {
 	private String title;
 
 	@Column(nullable = false)
+	private String description;
+
+	@Column(nullable = false)
 	private Float monthlyAmount;
 
-	@OneToMany(mappedBy = "pot", fetch = FetchType.LAZY, orphanRemoval = true)
-	@BatchSize(size = 10)
-	private List<UpdateDate> update;
+	@OneToMany(mappedBy = "pot", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
+	private List<UpdateDate> update = new ArrayList();
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@JsonBackReference
 	private User user;
 
 	public Pot() {
 	}
 
-	public Pot(UUID id, String title, Float monthlyAmount) {
+	public Pot(UUID id, String title, String description, Float monthlyAmount, List<UpdateDate> update) {
 		super();
 		this.id = id;
 		this.title = title;
+		this.description = description;
 		this.monthlyAmount = monthlyAmount;
+		this.update = update;
 	}
 
-	public Pot(UUID id, String title, Float monthlyAmount, List<UpdateDate> update, User user) {
+	public Pot(UUID id, String title, String description, Float monthlyAmount, List<UpdateDate> update, User user) {
 		super();
 		this.id = id;
 		this.title = title;
+		this.description = description;
 		this.monthlyAmount = monthlyAmount;
 		this.update = update;
 		this.user = user;
@@ -96,9 +105,18 @@ public class Pot implements Serializable {
 		this.user = user;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	@Override
 	public String toString() {
-		return "Pot [id=" + id + ", title=" + title + ", monthlyAmount=" + monthlyAmount + ", update=" + update + "]";
+		return "Pot [id=" + id + ", title=" + title + ", description=" + description + ", monthlyAmount="
+				+ monthlyAmount + ", update=" + update + "]";
 	}
 
 	@Override

@@ -1,0 +1,27 @@
+package com.example.demo.resource;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.entity.Pot;
+import com.example.demo.service.PotService;
+
+@RestController
+@RequestMapping(value = "/api/v1/pot")
+public class PotController {
+
+	@Autowired
+	private PotService potService;
+	
+	@GetMapping
+	public ResponseEntity<List<Pot>> allPots() {
+		
+		return null;
+	}
+	
+}

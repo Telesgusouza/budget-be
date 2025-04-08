@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="FriendServiceTest" project="demo" tests="2" started="2" failures="0" errors="0" ignored="0">
-  <testsuite name="com.example.demo.service.FriendServiceTest" time="1.27" displayname="FriendServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]">
-    <testcase name="addedFriendSuccessfully" classname="com.example.demo.service.FriendServiceTest" time="1.263" displayname="added friend successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:addedFriendSuccessfully()]"/>
-    <testcase name="friendAlreadyExists" classname="com.example.demo.service.FriendServiceTest" time="0.006" displayname="friend already exists" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.FriendServiceTest]/[method:friendAlreadyExists()]"/>
-  </testsuite>
-</testrun>

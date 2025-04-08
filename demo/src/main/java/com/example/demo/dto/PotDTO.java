@@ -1,5 +1,5 @@
 package com.example.demo.dto;
 
-public record PotDTO(String title, Float monthlyAmount) {
+public record PotDTO(String title, String description, Float monthlyAmount) {
 
 }

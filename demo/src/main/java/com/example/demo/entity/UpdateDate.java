@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,21 +24,27 @@ public class UpdateDate implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
-	
+
 	@Column(nullable = false)
 	private Instant date;
-	
+
 	@Column(nullable = false, scale = 2)
 	private Float value;
-	
+
 	// connections
+//	@ManyToOne
+//	@JoinColumn(name = "pot_id")
+//	@JsonManagedReference
+//	private Pot pot; 
+
 	@ManyToOne
 	@JoinColumn(name = "pot_id")
-	private Pot pot; 
+	@JsonBackReference
+	private Pot pot;
 
 	public UpdateDate() {
 	}
-	
+
 	public UpdateDate(UUID id, Instant date, Float value) {
 		super();
 		this.id = id;
@@ -68,6 +76,10 @@ public class UpdateDate implements Serializable {
 		this.value = value;
 	}
 
+	public void setPot(Pot pot) {
+		this.pot = pot;
+	}
+
 	@Override
 	public String toString() {
 		return "UpdateDate [id=" + id + ", date=" + date + ", value=" + value + "]";
@@ -91,36 +103,3 @@ public class UpdateDate implements Serializable {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
