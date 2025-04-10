@@ -14,8 +14,6 @@ import com.example.demo.entity.Pot;
 import com.example.demo.entity.UpdateDate;
 import com.example.demo.entity.User;
 import com.example.demo.repositories.PotRepository;
-import com.example.demo.repositories.UpdateDateRepository;
-import com.example.demo.repositories.UserRepository;
 import com.example.demo.service.exception.ResourceAlreadyExists;
 import com.example.demo.service.exception.ResourceNotFoundException;
 
@@ -23,13 +21,7 @@ import com.example.demo.service.exception.ResourceNotFoundException;
 public class PotService {
 
 	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
 	private PotRepository potRepository;
-
-	@Autowired
-	private UpdateDateRepository updateDateRepository;
 
 	@Transactional
 	public Pot newPot(User user, PotDTO data) {
@@ -73,8 +65,6 @@ public class PotService {
 
 		if (!data.monthlyAmount().equals(request.getMonthlyAmount()) && data.monthlyAmount() != null) {
 
-			System.out.println("ESTÁ AQUI");
-
 			UpdateDate update = new UpdateDate(null, Instant.now(), data.monthlyAmount());
 			update.setPot(request);
 			request.getUpdate().add(update);
@@ -82,9 +72,10 @@ public class PotService {
 			request.setMonthlyAmount(data.monthlyAmount());
 		}
 
-		String title = data.title() == null || data.title().equals("") ? request.getTitle() : data.title();
+		String title = data.title() == null && data.title().equals("") ? request.getTitle() : data.title();
 
-		String description = data.description() == null || data.title().equals("") ? request.getTitle() : data.title();
+		String description = data.description() == null || data.description().equals("") ? request.getTitle()
+				: data.title();
 
 		request.setTitle(title);
 		request.setDescription(description);

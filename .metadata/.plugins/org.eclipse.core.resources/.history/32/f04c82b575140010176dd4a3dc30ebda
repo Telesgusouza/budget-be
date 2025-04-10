@@ -1,0 +1,107 @@
+package com.example.demo.service;
+
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.User;
+import com.example.demo.enums.UserRole;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+
+@TestPropertySource(properties = { 
+		"cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", 
+		"cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", 
+		"cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class PotServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PotRepository potRepository;
+
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+	
+	@InjectMocks
+	private FriendService friendService;
+	
+	@DisplayName("I add new successfully")
+	@Test
+	public void iAddNewSuccessfully() {
+		
+		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO("title", "description", (float) 205.50);
+		
+		
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

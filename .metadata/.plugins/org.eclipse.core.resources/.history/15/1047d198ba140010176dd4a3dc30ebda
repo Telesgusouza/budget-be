@@ -1,0 +1,135 @@
+package com.example.demo.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.stereotype.Service;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.Pot;
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.entity.User;
+import com.example.demo.enums.UserRole;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+import com.example.demo.service.exception.ResourceAlreadyExists;
+import com.example.demo.service.exception.ResourceNotFoundException;
+
+@TestPropertySource(properties = { "cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", "cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", "cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class PotServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PotRepository potRepository;
+
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+
+	@InjectMocks
+	private PotService potService;
+
+	@DisplayName("I add new successfully")
+	@Test
+	public void iAddNewSuccessfully() {
+		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO("title", "description", (float) 205.50);
+		
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+
+		pot.getUpdate().add(update);
+		
+		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+
+		Pot request = potService.newPot(user, data);
+
+		assertNotNull(request);
+	}
+	
+	@Test
+	public void potAlreadyExistsInlist() {
+		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO("title", "description", (float) 205.50);
+		
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+		
+		pot.getUpdate().add(update);
+		user.getPots().add(pot);
+		
+		assertThrows(ResourceNotFoundException.class,  () -> potService.newPot(user, data));
+		
+	}
+
+}
+
+/*
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

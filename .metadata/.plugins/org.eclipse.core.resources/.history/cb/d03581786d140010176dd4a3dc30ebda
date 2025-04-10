@@ -1,0 +1,33 @@
+package com.example.demo.service;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
+
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+
+@TestPropertySource(properties = { "cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", "cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", "cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class PotServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PotRepository potRepository;
+
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+	
+	@InjectMocks
+	private FriendService friendService;
+	
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="PotServiceTest" project="demo" tests="5" started="5" failures="1" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.PotServiceTest" time="1.332" displayname="PotServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]">
+    <testcase name="potIdCannotBeNull" classname="com.example.demo.service.PotServiceTest" time="1.271" displayname="pot id cannot be null" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potIdCannotBeNull()]"/>
+    <testcase name="potEditedSuccessfullyWithoutChangingValue" classname="com.example.demo.service.PotServiceTest" time="0.042" displayname="pot edited successfully without changing value" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potEditedSuccessfullyWithoutChangingValue()]">
+      <failure>org.opentest4j.AssertionFailedError: expected: not equal but was: &lt;edit&gt;
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotEquals.failEqual(AssertNotEquals.java:277)
+	at org.junit.jupiter.api.AssertNotEquals.assertNotEquals(AssertNotEquals.java:263)
+	at org.junit.jupiter.api.AssertNotEquals.assertNotEquals(AssertNotEquals.java:258)
+	at org.junit.jupiter.api.Assertions.assertNotEquals(Assertions.java:2819)
+	at com.example.demo.service.PotServiceTest.potEditedSuccessfullyWithoutChangingValue(PotServiceTest.java:139)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+</failure>
+    </testcase>
+    <testcase name="iAddNewSuccessfully" classname="com.example.demo.service.PotServiceTest" time="0.006" displayname="I add new successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:iAddNewSuccessfully()]"/>
+    <testcase name="bringingPotByidSuccessfully" classname="com.example.demo.service.PotServiceTest" time="0.005" displayname="bringing Pot by id successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:bringingPotByidSuccessfully()]"/>
+    <testcase name="potAlreadyExistsInlist" classname="com.example.demo.service.PotServiceTest" time="0.004" displayname="Pot already exists in list" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potAlreadyExistsInlist()]"/>
+  </testsuite>
+</testrun>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="PotServiceTest" project="demo" tests="5" started="5" failures="0" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.PotServiceTest" time="1.337" displayname="PotServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]">
+    <testcase name="potIdCannotBeNull" classname="com.example.demo.service.PotServiceTest" time="1.283" displayname="pot id cannot be null" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potIdCannotBeNull()]"/>
+    <testcase name="potEditedSuccessfullyWithoutChangingValue" classname="com.example.demo.service.PotServiceTest" time="0.033" displayname="pot edited successfully without changing value" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potEditedSuccessfullyWithoutChangingValue()]"/>
+    <testcase name="iAddNewSuccessfully" classname="com.example.demo.service.PotServiceTest" time="0.006" displayname="I add new successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:iAddNewSuccessfully()]"/>
+    <testcase name="bringingPotByidSuccessfully" classname="com.example.demo.service.PotServiceTest" time="0.007" displayname="bringing Pot by id successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:bringingPotByidSuccessfully()]"/>
+    <testcase name="potAlreadyExistsInlist" classname="com.example.demo.service.PotServiceTest" time="0.004" displayname="Pot already exists in list" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potAlreadyExistsInlist()]"/>
+  </testsuite>
+</testrun>

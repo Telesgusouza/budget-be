@@ -64,11 +64,15 @@ public class PotController {
 
 	@GetMapping
 	public ResponseEntity<ResponseListPotDTO> getAllPots(@AuthenticationPrincipal User user,
-			@RequestParam(defaultValue = "0") @Min(1) int page ,
+			@RequestParam(defaultValue = "0") @Min(1) int page,
 			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
 
 		page -= 1;
-		
+
+		if (page == -1) {
+			throw new ResourceNotFoundException("page number must be greater than 0");
+		}
+
 		if (user == null) {
 			throw new AuthenticationFailed("invalid data");
 		}

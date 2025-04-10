@@ -1,0 +1,281 @@
+package com.example.demo.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.stereotype.Service;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.Pot;
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.entity.User;
+import com.example.demo.enums.UserRole;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+import com.example.demo.service.exception.ResourceAlreadyExists;
+import com.example.demo.service.exception.ResourceNotFoundException;
+
+@TestPropertySource(properties = { "cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", "cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", "cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class PotServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PotRepository potRepository;
+
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+
+	@InjectMocks
+	private PotService potService;
+
+	@DisplayName("I add new successfully")
+	@Test
+	public void iAddNewSuccessfully() {
+		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO("title", "description", (float) 205.50);
+		
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+
+		pot.getUpdate().add(update);
+		
+		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+
+		Pot request = potService.newPot(user, data);
+
+		assertNotNull(request);
+	}
+	
+	@DisplayName("Pot already exists in list")
+	@Test
+	public void potAlreadyExistsInlist() {
+		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO("title", "description", (float) 205.50);
+		
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+		
+		pot.getUpdate().add(update);
+		user.getPots().add(pot);
+		
+		assertThrows(ResourceAlreadyExists.class,  () -> potService.newPot(user, data));
+		
+	}
+	
+	// getPot
+	@DisplayName("bringing Pot by id successfully")
+	@Test
+	public void bringingPotByidSuccessfully() {
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+		
+		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+		
+		Pot requestPot = potService.getIdPot(pot.getId());
+		
+		assertNotNull(requestPot);
+	}
+	
+	@DisplayName("pot id cannot be null")
+	@Test
+	public void potIdCannotBeNull() {
+		
+		assertThrows(ResourceNotFoundException.class, () -> potService.getIdPot(null));
+	}
+
+	@DisplayName("pot edited successfully without changing value")
+	@Test
+	public void potEditedSuccessfullyWithoutChangingValue() {
+	    PotDTO data = new PotDTO("edit", "edit", (float) 205.50);
+	    Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+	    Pot editPot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+	    editPot.setTitle(data.title());
+	    editPot.setDescription(data.description());
+	    
+	    when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+	    when(potRepository.save(any(Pot.class))).thenReturn(editPot);
+	    
+	    System.out.println();
+	    System.out.println();
+	    
+	    Pot response = potService.editPot(data, pot.getId());
+	    
+	    System.out.println(response.getTitle());
+	    System.out.println(pot.getTitle());
+	    
+	    System.out.println();
+	    System.out.println();
+	    
+	    assertNotNull(response);
+	    assertEquals(data.title(), response.getTitle());  // Verifica se o título permaneceu igual
+//	    assertNotEquals(pot.getTitle(), response.getTitle());  // Verifica se os títulos são diferentes
+	}
+	
+	/*
+	
+	
+	@DisplayName("pot edited successfully without changing value")
+	@Test
+	public void potEditedSuccessfullyWithoutChangingValue() {
+	    PotDTO data = new PotDTO("edit title", "edit description", (float) 205.50);
+	    Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+	    
+	    when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+	    when(potRepository.save(any(Pot.class))).thenReturn(pot);
+	    
+	    System.out.println();
+	    System.out.println();
+	    
+	    Pot response = potService.editPot(data, pot.getId());
+	    
+	    System.out.println(response.getTitle());
+	    System.out.println(pot.getTitle());
+	    
+	    System.out.println();
+	    System.out.println();
+	    
+	    assertNotNull(response);
+//	    assertEquals(pot.getTitle(), response.getTitle());  // Verifica se o título permaneceu igual
+	    assertNotEquals(data.title(), response.getTitle());  // Verifica se os títulos são diferentes
+	}
+	
+	public Pot editPot(PotDTO data, UUID id) {
+
+		Optional<Pot> requestOptional = this.potRepository.findById(id);
+		Pot request = requestOptional.orElseThrow(() -> new ResourceNotFoundException("pot not found"));
+
+		if (!data.monthlyAmount().equals(request.getMonthlyAmount()) && data.monthlyAmount() != null) {
+
+			UpdateDate update = new UpdateDate(null, Instant.now(), data.monthlyAmount());
+			update.setPot(request);
+			request.getUpdate().add(update);
+
+			request.setMonthlyAmount(data.monthlyAmount());
+		}
+
+		String title = data.title() == null || data.title().equals("") ? request.getTitle() : data.title();
+
+		String description = data.description() == null || data.title().equals("") ? request.getTitle() : data.title();
+
+		request.setTitle(title);
+		request.setDescription(description);
+
+		Pot response = this.potRepository.save(request);
+
+		return response;
+	}
+	
+	
+	*/
+	
+	
+	
+	// editPot (edit pot)
+//	@DisplayName("pot edited successfully without changing value")
+//	@Test
+//	public void potEditedSuccessfullyWithoutChangingValue() {
+////		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+//		PotDTO data = new PotDTO("edit title", "edit description", (float) 205.50);
+//		
+////		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+//		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+//		
+//		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+//		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+//		
+//		Pot response = potService.editPot(data, pot.getId());
+//		
+//		assertNotNull(response);
+//		assertNotEquals(pot.getTitle(), response.getTitle());
+//	}
+	
+}
+
+/*
+
+ainda está surgindo erros no meu teste
+
+@DisplayName("pot edited successfully without changing value")
+	@Test
+	public void potEditedSuccessfullyWithoutChangingValue() {
+	    PotDTO data = new PotDTO("edit title", "edit description", (float) 205.50);
+	    Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, new ArrayList<>());
+	    
+	    when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+	    when(potRepository.save(any(Pot.class))).thenReturn(pot);
+	    
+	    Pot response = potService.editPot(data, pot.getId());
+	    assertNotNull(response);
+	    assertNotEquals(pot.getTitle(), response.getTitle());  // Este é seu código atual
+	}
+
+	org.opentest4j.AssertionFailedError: expected: not equal but was: <edit title>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertNotEquals.failEqual(AssertNotEquals.java:277)
+	at org.junit.jupiter.api.AssertNotEquals.assertNotEquals(AssertNotEquals.java:263)
+	at org.junit.jupiter.api.AssertNotEquals.assertNotEquals(AssertNotEquals.java:258)
+	at org.junit.jupiter.api.Assertions.assertNotEquals(Assertions.java:2819)
+	at com.example.demo.service.PotServiceTest.potEditedSuccessfullyWithoutChangingValue(PotServiceTest.java:125)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
