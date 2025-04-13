@@ -7,7 +7,6 @@
     <fullyQualifiedTypeName name="org.springframework.data.domain.PageImpl"/>
     <fullyQualifiedTypeName name="com.example.demo.dto.ResponseListFriendDTO"/>
     <fullyQualifiedTypeName name="org.springframework.transaction.annotation.Transactional"/>
-    <fullyQualifiedTypeName name="com.example.demo.service.exception.ResourceNotFoundException"/>
     <fullyQualifiedTypeName name="org.springframework.web.service.annotation.PatchExchange"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PatchMapping"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestBody"/>
@@ -32,16 +31,12 @@
     <fullyQualifiedTypeName name="jakarta.validation.Valid"/>
     <fullyQualifiedTypeName name="com.example.demo.service.exception.ResourceAlreadyExists"/>
     <fullyQualifiedTypeName name="com.example.demo.dto.EditFriendDTO"/>
-    <fullyQualifiedTypeName name="java.util.Optional"/>
     <fullyQualifiedTypeName name="com.example.demo.entity.Friend"/>
-    <fullyQualifiedTypeName name="org.junit.jupiter.api.Test"/>
-    <fullyQualifiedTypeName name="org.junit.jupiter.api.DisplayName"/>
     <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RestController"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.RequestMapping"/>
     <fullyQualifiedTypeName name="org.springframework.beans.factory.annotation.Autowired"/>
     <fullyQualifiedTypeName name="jakarta.persistence.Column"/>
-    <fullyQualifiedTypeName name="com.example.demo.service.PotService"/>
     <fullyQualifiedTypeName name="io.swagger.annotations.Authorization"/>
     <fullyQualifiedTypeName name="com.example.demo.entity.User"/>
     <fullyQualifiedTypeName name="java.util.UUID"/>
@@ -60,4 +55,9 @@
     <fullyQualifiedTypeName name="com.example.demo.dto.ResponseListPotDTO"/>
     <fullyQualifiedTypeName name="org.springframework.http.ResponseEntity"/>
     <fullyQualifiedTypeName name="org.springframework.web.bind.annotation.PathVariable"/>
+    <fullyQualifiedTypeName name="java.util.Optional"/>
+    <fullyQualifiedTypeName name="com.example.demo.service.PotService"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.DisplayName"/>
+    <fullyQualifiedTypeName name="org.junit.jupiter.api.Test"/>
+    <fullyQualifiedTypeName name="com.example.demo.service.exception.ResourceNotFoundException"/>
 </qualifiedTypeNameHistroy>

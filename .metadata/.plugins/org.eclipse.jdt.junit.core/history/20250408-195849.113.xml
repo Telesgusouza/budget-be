@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="PotServiceTest" project="demo" tests="2" started="2" failures="0" errors="0" ignored="0">
-  <testsuite name="com.example.demo.service.PotServiceTest" time="1.786" displayname="PotServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]">
-    <testcase name="iAddNewSuccessfully" classname="com.example.demo.service.PotServiceTest" time="1.772" displayname="I add new successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:iAddNewSuccessfully()]"/>
-    <testcase name="potAlreadyExistsInlist" classname="com.example.demo.service.PotServiceTest" time="0.012" displayname="Pot already exists in list" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:potAlreadyExistsInlist()]"/>
-  </testsuite>
-</testrun>

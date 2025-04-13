@@ -32,15 +32,15 @@ public class UpdateDate implements Serializable {
 	private Float value;
 
 	// connections
-//	@ManyToOne
-//	@JoinColumn(name = "pot_id")
-//	@JsonManagedReference
-//	private Pot pot; 
-
 	@ManyToOne
 	@JoinColumn(name = "pot_id")
 	@JsonBackReference
 	private Pot pot;
+
+	@ManyToOne
+	@JoinColumn(name = "budget_id")
+	@JsonBackReference
+	private Budget budget;
 
 	public UpdateDate() {
 	}
@@ -78,6 +78,10 @@ public class UpdateDate implements Serializable {
 
 	public void setPot(Pot pot) {
 		this.pot = pot;
+	}
+
+	public void setBudget(Budget budget) {
+		this.budget = budget;
 	}
 
 	@Override

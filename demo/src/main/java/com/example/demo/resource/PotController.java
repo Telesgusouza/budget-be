@@ -24,13 +24,20 @@ import com.example.demo.dto.PotDTO;
 import com.example.demo.dto.ResponseListPotDTO;
 import com.example.demo.entity.Pot;
 import com.example.demo.entity.User;
+import com.example.demo.resource.exception.StandardError;
 import com.example.demo.service.PotService;
 import com.example.demo.service.exception.AuthenticationFailed;
 import com.example.demo.service.exception.ResourceNotFoundException;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 
+@Tag(name = "Pot", description = "related operations manipulate pot")
 @RestController
 @RequestMapping(value = "/api/v1/pot")
 public class PotController {
@@ -38,6 +45,36 @@ public class PotController {
 	@Autowired
 	private PotService potService;
 
+	@Operation(
+			summary = "add new pot",
+			description = "add a new pot to your pot list",
+			responses = {
+					
+					@ApiResponse(
+							responseCode = "200",
+							description = "success in adding new Pot",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = Pot.class))),
+					
+					@ApiResponse(
+							responseCode = "409",
+							description = "pot already exists in list",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+					@ApiResponse(
+							responseCode = "403",
+							description = "pot already exists in list",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),					
+					
+			})
 	@PostMapping
 	public ResponseEntity<Pot> addNewPot(@AuthenticationPrincipal User user, @RequestBody PotDTO data) {
 
@@ -50,6 +87,20 @@ public class PotController {
 		return ResponseEntity.ok().body(response);
 	}
 
+	@Operation(
+			summary = "add new pot",
+			description = "add a new pot to your pot list",
+			responses = {
+					
+					@ApiResponse(
+							responseCode = "200",
+							description = "bringing pot through id",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = Pot.class))),
+					
+			})
 	@GetMapping("/{id}")
 	public ResponseEntity<Pot> getPot(@PathVariable UUID id) {
 

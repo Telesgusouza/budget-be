@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testrun name="PotServiceTest" project="demo" tests="1" started="1" failures="0" errors="0" ignored="0">
-  <testsuite name="com.example.demo.service.PotServiceTest" time="2.35" displayname="PotServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]">
-    <testcase name="iAddNewSuccessfully" classname="com.example.demo.service.PotServiceTest" time="2.35" displayname="I add new successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.PotServiceTest]/[method:iAddNewSuccessfully()]"/>
-  </testsuite>
-</testrun>
