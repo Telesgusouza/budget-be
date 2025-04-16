@@ -1,0 +1,228 @@
+package com.example.demo.resource;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.BudgetDTO;
+import com.example.demo.dto.ResponseListBudgetDTO;
+import com.example.demo.entity.Budget;
+import com.example.demo.entity.User;
+import com.example.demo.service.BudgetService;
+import com.example.demo.service.exception.AuthenticationFailed;
+import com.example.demo.service.exception.ResourceNotFoundException;
+
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+
+@RestController
+@RequestMapping(value = "/api/v1/budget")
+public class BudgetController {
+
+	@Autowired
+	private BudgetService budgetService;
+	
+	@PostMapping
+	public ResponseEntity<Budget> addNewBudget(@AuthenticationPrincipal User user, 
+			@RequestBody BudgetDTO data) {
+		
+		if (user == null) {
+			throw new AuthenticationFailed("invalid data");
+		}
+		
+		Budget response = budgetService.addBudget(user, data);
+		
+		return ResponseEntity.status(201).body(response);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<Budget> getBudget(@PathVariable UUID id) {
+		
+		Budget budget = budgetService.getBudget(id);
+		
+		if (budget == null) {
+			throw new ResourceNotFoundException("info budget not found");
+		}
+		
+		return ResponseEntity.status(200).body(budget);
+	}
+	
+	@GetMapping
+	public ResponseEntity<ResponseListBudgetDTO> getAllBudgets(
+			@AuthenticationPrincipal User user,
+			@RequestParam(defaultValue = "0") @Min(1) int page,
+			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
+		
+		page -= 1;
+		
+		if (page == -1) {
+			throw new ResourceNotFoundException("page number must be greater than 0");
+		}
+		
+		if (user == null) {
+			throw new AuthenticationFailed("Invalid data");
+		}
+		
+		List<Budget> budgetList = user.getBudget().stream().skip((long)page * size)
+				.limit(size).collect(Collectors.toList());
+		
+		ResponseListBudgetDTO response = new ResponseListBudgetDTO(budgetList, page, size, 
+				user.getBudget().size(), (int) Math.ceil((double) user.getBudget().size() / size), 
+				page * size < user.getBudget().size());
+		
+		return ResponseEntity.status(200).body(response);
+	}
+	
+}
+
+/*
+
+boa noite, gostaria que na resposta não saisse o update
+
+{
+	"content": [
+		{
+			"id": "c371f40c-2987-4df0-8725-f5b625564c0b",
+			"title": "new budget",
+			"description": "desciption budget",
+			"monthlyAmount": 600,
+			"update": [
+				{
+					"id": "ac588a63-e659-4543-b712-108c33c0868d",
+					"date": "2025-04-16T00:00:26.684755Z",
+					"value": 600
+				}
+			]
+		},
+		{
+			"id": "47ffea53-d7e3-48bb-975b-4982114dc0a7",
+			"title": "new 1# budget",
+			"description": "desciption budget",
+			"monthlyAmount": 600,
+			"update": [
+				{
+					"id": "f3fcf4cd-32dc-4157-a243-5be8279fb346",
+					"date": "2025-04-16T00:05:07.466660Z",
+					"value": 600
+				}
+			]
+		},
+		{
+			"id": "da1edf1f-f609-4803-b150-dfeff6c70ff9",
+			"title": "new 2# budget",
+			"description": "desciption budget",
+			"monthlyAmount": 600,
+			"update": [
+				{
+					"id": "b44c636e-50a0-4254-b812-1f35c14ab59a",
+					"date": "2025-04-16T00:17:39.439088Z",
+					"value": 600
+				}
+			]
+		}
+	],
+	"currentPage": 0,
+	"pageSize": 5,
+	"totalElements": 3,
+	"totalPages": 1,
+	"hasNext": true
+}
+
+	@GetMapping
+	public ResponseEntity<ResponseListBudgetDTO> getAllBudgets(
+			@AuthenticationPrincipal User user,
+			@RequestParam(defaultValue = "0") @Min(1) int page,
+			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
+		
+		page -= 1;
+		
+		if (page == -1) {
+			throw new ResourceNotFoundException("page number must be greater than 0");
+		}
+		
+		if (user == null) {
+			throw new AuthenticationFailed("Invalid data");
+		}
+		
+		List<Budget> budgetList = user.getBudget().stream().skip((long)page * size)
+				.limit(size).collect(Collectors.toList());
+		
+		ResponseListBudgetDTO response = new ResponseListBudgetDTO(budgetList, page, size, 
+				user.getBudget().size(), (int) Math.ceil((double) user.getBudget().size() / size), 
+				page * size < user.getBudget().size());
+		
+		return ResponseEntity.status(200).body(response);
+	}
+
+public record ResponseListBudgetDTO(
+			List<Budget> content,
+			Integer currentPage,
+			Integer pageSize,
+			Integer totalElements,
+			Integer totalPages,
+			boolean hasNext
+		) {
+
+}
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -72,9 +72,12 @@ public class PotService {
 			request.setMonthlyAmount(data.monthlyAmount());
 		}
 
-		String title = data.title() == null && data.title().equals("") ? request.getTitle() : data.title();
+		String title = data.title() == null && data.title().equals("") 
+				? request.getTitle() 
+				: data.title();
 
-		String description = data.description() == null || data.description().equals("") ? request.getTitle()
+		String description = data.description() == null || data.description().equals("") 
+				? request.getTitle()
 				: data.title();
 
 		request.setTitle(title);
@@ -102,3 +105,59 @@ public class PotService {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

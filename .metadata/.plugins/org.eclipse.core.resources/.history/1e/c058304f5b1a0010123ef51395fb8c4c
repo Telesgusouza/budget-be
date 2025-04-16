@@ -1,0 +1,16 @@
+package com.example.demo.dto;
+
+import java.util.List;
+
+import com.example.demo.entity.Budget;
+
+public record ResponseListBudgetDTO(
+			List<Budget> content,
+			Integer currentPage,
+			Integer pageSize,
+			Integer totalElements,
+			Integer totalPages,
+			boolean hasNext
+		) {
+
+}

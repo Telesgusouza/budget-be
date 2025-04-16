@@ -121,7 +121,7 @@ public class Pot implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, monthlyAmount, title, update);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -133,8 +133,7 @@ public class Pot implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Pot other = (Pot) obj;
-		return Objects.equals(id, other.id) && Objects.equals(monthlyAmount, other.monthlyAmount)
-				&& Objects.equals(title, other.title) && Objects.equals(update, other.update);
+		return Objects.equals(id, other.id);
 	}
 
 }

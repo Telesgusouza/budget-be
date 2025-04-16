@@ -13,7 +13,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.example.demo.enums.UserRole;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -64,8 +63,9 @@ public class User implements UserDetails, Serializable {
 //	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 //	private Account account;
 //
-//	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
-//	private Budget budget;
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+	@BatchSize(size = 10)
+	private List<Budget> budget;
 
 	public User() {
 	}
@@ -180,17 +180,17 @@ public class User implements UserDetails, Serializable {
 //	public void setAccount(Account account) {
 //		this.account = account;
 //	}
-//
-//	public Budget getBudget() {
-//		return budget;
-//	}
-//
-//	public void setBudget(Budget budget) {
-//		this.budget = budget;
-//	}
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public List<Budget> getBudget() {
+		return budget;
+	}
+
+	public void setBudget(List<Budget> budget) {
+		this.budget = budget;
 	}
 
 	public String getName() {

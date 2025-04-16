@@ -68,6 +68,7 @@ INDEX VERSION 1.134+/home/gustavo/Area_de_Trabalho/budget-be/.metadata/.plugins/
 1764835831.index
 2992907365.index
 1846163738.index
+1924484980.index
 1507817973.index
 2793989801.index
 2397691977.index

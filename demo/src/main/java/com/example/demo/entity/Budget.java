@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -14,11 +15,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
-@Entity(name = "budget_db")
-@Table(name = "budget_db")
+@Entity(name = "db_budget")
+@Table(name = "db_budget")
 public class Budget implements Serializable {
 	private static final long serialVersionUID = 6519736677877770708L;
 
@@ -33,29 +36,34 @@ public class Budget implements Serializable {
 	private String description;
 
 	@Column(nullable = false)
-	private String value;
+	private Float monthlyAmount;
 
 	@OneToMany(mappedBy = "budget", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<UpdateDate> update = new ArrayList();
 
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	@JsonBackReference
+	private User user;
+
 	public Budget() {
 	}
 
-	public Budget(UUID id, String title, String description, String value) {
+	public Budget(UUID id, String title, String description, Float monthlyAmount) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.value = value;
+		this.monthlyAmount = monthlyAmount;
 	}
 
-	public Budget(UUID id, String title, String description, String value, List<UpdateDate> update) {
+	public Budget(UUID id, String title, String description, Float monthlyAmount, List<UpdateDate> update) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
-		this.value = value;
+		this.monthlyAmount = monthlyAmount;
 		this.update = update;
 	}
 
@@ -83,12 +91,12 @@ public class Budget implements Serializable {
 		this.description = description;
 	}
 
-	public String getValue() {
-		return value;
+	public Float getMonthlyAmount() {
+		return monthlyAmount;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setMonthlyAmount(Float monthlyAmount) {
+		this.monthlyAmount = monthlyAmount;
 	}
 
 	public List<UpdateDate> getUpdate() {
@@ -99,9 +107,14 @@ public class Budget implements Serializable {
 		this.update = update;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	@Override
 	public String toString() {
-		return "Budget [id=" + id + ", title=" + title + ", description=" + description + ", value=" + value + "]";
+		return "Budget [id=" + id + ", title=" + title + ", description=" + description + ", monthlyAmount="
+				+ monthlyAmount + "]";
 	}
 
 	@Override

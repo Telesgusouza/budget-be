@@ -1,9 +1,0 @@
-package com.example.demo.dto;
-
-public record PotDTO(String title, String description, double monthlyAmount) {
-
-//	public PotDTO(String string, String string2, double d) {
-//		// TODO Auto-generated constructor stub
-//	}
-
-}

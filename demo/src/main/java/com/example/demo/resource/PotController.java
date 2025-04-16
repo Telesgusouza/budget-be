@@ -51,7 +51,7 @@ public class PotController {
 			responses = {
 					
 					@ApiResponse(
-							responseCode = "200",
+							responseCode = "201",
 							description = "success in adding new Pot",
 							content = @Content(
 									mediaType = "application/json",
@@ -76,7 +76,8 @@ public class PotController {
 					
 			})
 	@PostMapping
-	public ResponseEntity<Pot> addNewPot(@AuthenticationPrincipal User user, @RequestBody PotDTO data) {
+	public ResponseEntity<Pot> addNewPot(@AuthenticationPrincipal User user, 
+			@RequestBody PotDTO data) {
 
 		if (user == null) {
 			throw new AuthenticationFailed("invalid data");
@@ -84,12 +85,12 @@ public class PotController {
 
 		Pot response = potService.newPot(user, data);
 
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.status(201).body(response);
 	}
 
 	@Operation(
-			summary = "add new pot",
-			description = "add a new pot to your pot list",
+			summary = "bring pot",
+			description = "recover pot through id",
 			responses = {
 					
 					@ApiResponse(
@@ -99,6 +100,30 @@ public class PotController {
 									mediaType = "application/json",
 									schema = @Schema(
 											implementation = Pot.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "info pot not found",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "id cannot be null",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "pot not found",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
 					
 			})
 	@GetMapping("/{id}")
@@ -110,11 +135,43 @@ public class PotController {
 			throw new ResourceNotFoundException("info pot not found");
 		}
 
-		return ResponseEntity.ok().body(pot);
+		return ResponseEntity.status(200).body(pot);
 	}
 
+	@Operation(
+			summary = "bring list of pots",
+			description = "Retrieves a list of traversable pots from the JWT token",
+			responses = {
+					
+					@ApiResponse(
+							responseCode = "200",
+							description = "Pots successfully recovered",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = ResponseListPotDTO.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "page number must be greater than 0",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+					@ApiResponse(
+							responseCode = "403",
+							description = "invalid data",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+			}
+			)
 	@GetMapping
-	public ResponseEntity<ResponseListPotDTO> getAllPots(@AuthenticationPrincipal User user,
+	public ResponseEntity<ResponseListPotDTO> getAllPots(
+			@AuthenticationPrincipal User user,
 			@RequestParam(defaultValue = "0") @Min(1) int page,
 			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
 
@@ -130,22 +187,78 @@ public class PotController {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
 
-		List<Pot> potList = user.getPots().stream().skip((long) page * size).limit(size).collect(Collectors.toList());
+		List<Pot> potList = user.getPots().stream().skip((long) page * size)
+				.limit(size).collect(Collectors.toList());
 
 		ResponseListPotDTO response = new ResponseListPotDTO(potList, page, size, user.getPots().size(),
-				(int) Math.ceil((double) user.getPots().size() / size), page * size < user.getPots().size());
+				(int) Math.ceil((double) user.getPots().size() / size), 
+				page * size < user.getPots().size());
 
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.status(200).body(response);
 	}
 
+	@Operation(
+			summary = "edit pot",
+			description = "operation responsible for editing a pot",
+			responses = {
+					
+					@ApiResponse(
+							responseCode = "200",
+							description = "bringing pot through id",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = Pot.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "pot not found",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),					
+					
+			}
+		)
 	@PatchMapping("/{id}")
 	public ResponseEntity<Pot> editPot(@RequestBody PotDTO data, @PathVariable UUID id) {
 
 		Pot response = potService.editPot(data, id);
 
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.status(200).body(response);
 	}
 
+	@Operation(
+			summary = "delete pot",
+			description = "operation responsible for deleting a pot",
+			responses = {
+					
+					@ApiResponse(
+							responseCode = "204",
+							description = "successfully deleted",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = Void.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "pot not found",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+					@ApiResponse(
+							responseCode = "400",
+							description = "An unexpected error occurred while deleting pot",
+							content = @Content(
+									mediaType = "application/json",
+									schema = @Schema(
+											implementation = StandardError.class))),
+					
+			}
+		)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePot(@PathVariable UUID id) {
 
@@ -155,3 +268,55 @@ public class PotController {
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
