@@ -63,7 +63,7 @@ public class User implements UserDetails, Serializable {
 //	@OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
 //	private Account account;
 //
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	@BatchSize(size = 10)
 	private List<Budget> budget;
 

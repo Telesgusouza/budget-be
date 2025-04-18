@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="BudgetServiceTest" project="demo" tests="2" started="2" failures="0" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.BudgetServiceTest" time="1.374" displayname="BudgetServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]">
+    <testcase name="newBudgetAddedSuccessfully" classname="com.example.demo.service.BudgetServiceTest" time="1.366" displayname="new budget added successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:newBudgetAddedSuccessfully()]"/>
+    <testcase name="budgetAlreadyExistsInList" classname="com.example.demo.service.BudgetServiceTest" time="0.007" displayname="budget already exists in list" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:budgetAlreadyExistsInList()]"/>
+  </testsuite>
+</testrun>

@@ -1,0 +1,125 @@
+package com.example.demo.service;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
+
+import com.example.demo.dto.BudgetDTO;
+import com.example.demo.entity.Budget;
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.entity.User;
+import com.example.demo.enums.UserRole;
+import com.example.demo.repositories.BudgetRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+
+@TestPropertySource(properties = { 
+		"cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", 
+		"cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", 
+		"cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class BudgetServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+	
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+	
+	@Mock
+	private BudgetRepository budgetRepository;
+	
+	@InjectMocks
+	private BudgetService budgetService;
+	
+	@DisplayName("new budget added successfully")
+	@Test
+	public void newBudgetAddedSuccessfully() {
+		User user = new User(
+				UUID.randomUUID(), 
+				"img", 
+				"test@gmail.com", 
+				"password_123", 
+				"name test", 
+				UserRole.USER
+				);
+		BudgetDTO data = new BudgetDTO("title", "description",(float) 205.45);
+		
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Budget budget = new Budget(null, "title", "description",(float) 205.45);
+		
+		budget.getUpdate().add(update);
+		
+		when(budgetRepository.save(any(Budget.class))).thenReturn(budget);
+		
+		Budget request = budgetService.addBudget(user, data);
+		
+		assertNotNull(request);
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

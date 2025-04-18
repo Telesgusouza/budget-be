@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="BudgetServiceTest" project="demo" tests="6" started="6" failures="0" errors="1" ignored="0">
+  <testsuite name="com.example.demo.service.BudgetServiceTest" time="1.439" displayname="BudgetServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]">
+    <testcase name="idIsNull" classname="com.example.demo.service.BudgetServiceTest" time="1.357" displayname="id is null" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:idIsNull()]"/>
+    <testcase name="newBudgetAddedSuccessfully" classname="com.example.demo.service.BudgetServiceTest" time="0.038" displayname="new budget added successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:newBudgetAddedSuccessfully()]"/>
+    <testcase name="budgetAlreadyExistsInList" classname="com.example.demo.service.BudgetServiceTest" time="0.005" displayname="budget already exists in list" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:budgetAlreadyExistsInList()]"/>
+    <testcase name="successfullyRecoveredTheBudget" classname="com.example.demo.service.BudgetServiceTest" time="0.007" displayname="successfully recovered the budget" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:successfullyRecoveredTheBudget()]"/>
+    <testcase name="editingTheBudgetWithoutChangingTheValue" classname="com.example.demo.service.BudgetServiceTest" time="0.006" displayname="Editing the budget without changing the value" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:editingTheBudgetWithoutChangingTheValue()]"/>
+    <testcase name="editTheBudgetAndChangeTheAmount" classname="com.example.demo.service.BudgetServiceTest" time="0.022" displayname="Edit the budget and change the amount" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:editTheBudgetAndChangeTheAmount()]">
+      <error>java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+	at java.base/jdk.internal.util.Preconditions.outOfBounds(Preconditions.java:100)
+	at java.base/jdk.internal.util.Preconditions.outOfBoundsCheckIndex(Preconditions.java:106)
+	at java.base/jdk.internal.util.Preconditions.checkIndex(Preconditions.java:302)
+	at java.base/java.util.Objects.checkIndex(Objects.java:385)
+	at java.base/java.util.ArrayList.get(ArrayList.java:427)
+	at com.example.demo.service.BudgetServiceTest.editTheBudgetAndChangeTheAmount(BudgetServiceTest.java:172)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+
+</error>
+    </testcase>
+  </testsuite>
+</testrun>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><testrun name="BudgetServiceTest" project="demo" tests="1" started="1" failures="0" errors="0" ignored="0">
+  <testsuite name="com.example.demo.service.BudgetServiceTest" time="1.326" displayname="BudgetServiceTest" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]">
+    <testcase name="newBudgetAddedSuccessfully" classname="com.example.demo.service.BudgetServiceTest" time="1.326" displayname="new budget added successfully" uniqueid="[engine:junit-jupiter]/[class:com.example.demo.service.BudgetServiceTest]/[method:newBudgetAddedSuccessfully()]"/>
+  </testsuite>
+</testrun>
