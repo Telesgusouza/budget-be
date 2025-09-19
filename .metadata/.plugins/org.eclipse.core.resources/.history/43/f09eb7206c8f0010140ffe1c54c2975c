@@ -1,0 +1,57 @@
+package com.example.demo.service;
+
+import java.time.Instant;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.enums.FilterPeriod;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+public class UpdateDateSpecification implements Specification<UpdateDate> {
+    private static final long MONTHS_6 = 183L; // aproximadamente 6 meses em dias
+    private static final long YEAR = 365L;
+
+    private FilterPeriod period;
+    private Instant now;
+
+    public UpdateDateSpecification(FilterPeriod period) {
+        this.period = period;
+        this.now = Instant.now();
+    }
+
+    @Override
+    public Predicate toPredicate(Root<UpdateDate> root, 
+                               CriteriaQuery<?> query, 
+                               CriteriaBuilder cb) {
+        Expression<Instant> dataExpression = root.get("date");
+        
+        switch (period) {
+            case ULTIMO_MES:
+                return cb.between(dataExpression, 
+                    agora.minus(30, ChronoUnit.DAYS),
+                    agora);
+                
+            case ULTIMOS_6_MESES:
+                return cb.between(dataExpression,
+                    agora.minus(MESES_6, ChronoUnit.DAYS),
+                    agora);
+                
+            case ULTIMO_ANO:
+                return cb.between(dataExpression,
+                    agora.minus(ANO, ChronoUnit.DAYS),
+                    agora);
+                
+            case TODOS:
+                return cb.conjunction();
+                
+            default:
+                return cb.conjunction();
+        }
+    }
+}

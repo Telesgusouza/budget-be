@@ -53,7 +53,7 @@ public class FriendServiceTest {
 	@DisplayName("added friend successfully")
 	public void addedFriendSuccessfully() {
 
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 
 		Friend friend = new Friend(UUID.randomUUID(), "img", "name test", UUID.randomUUID(), user);
 
@@ -71,7 +71,7 @@ public class FriendServiceTest {
 	@Test
 	@DisplayName("friend already exists")
 	public void friendAlreadyExists() {
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 
 		// Garante que a lista existe antes de adicionar amigos
 		user.setFriends(new ArrayList<>());
@@ -130,7 +130,7 @@ public class FriendServiceTest {
 	@DisplayName("friend deleted successfully")
 	public void friendDeletedSuccessfully() {
 		UUID friendId = UUID.randomUUID();
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 
 		Friend friend = new Friend(friendId, "img", "original name", UUID.randomUUID());
 		DeleteFriendDTO data = new DeleteFriendDTO(friendId);
@@ -147,7 +147,7 @@ public class FriendServiceTest {
 	@Test
 	@DisplayName("friend not found")
 	public void friendNotFound() {
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 
 		DeleteFriendDTO data = new DeleteFriendDTO(UUID.randomUUID());
 
@@ -161,7 +161,7 @@ public class FriendServiceTest {
 	public void friendDoesNotExistInFriendsList() {
 
 		UUID friendId = UUID.randomUUID();
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 
 		Friend friend = new Friend(friendId, "img", "original name", UUID.randomUUID());
 		DeleteFriendDTO data = new DeleteFriendDTO(friendId);

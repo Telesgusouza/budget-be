@@ -1,0 +1,154 @@
+package com.example.demo.service;
+
+import static org.mockito.Mockito.description;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.Pot;
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.entity.User;
+import com.example.demo.enums.FilterPeriod;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.service.exception.ResourceAlreadyExists;
+import com.example.demo.service.exception.ResourceNotFoundException;
+
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+@Service
+public class PotService {
+
+	@Autowired
+	private PotRepository potRepository;
+
+	public List<UpdateDate> listUpdates(
+			UUID id, 
+			FilterPeriod period) {
+		
+		Specification<Pot> spec = (root, query, cb) -> {
+			Join<Pot, UpdateDate> updateJoin = root.join("update", JoinType.LEFT);
+
+			Predicate periodoPredicate = null;
+			if (period != null && period != FilterPeriod.ALL) {
+				UpdateDateSpecification updateSpec = new UpdateDateSpecification(period);
+				Root<UpdateDate> updateRoot = query.from(UpdateDate.class);
+				periodoPredicate = updateSpec.toPredicate(updateRoot, query, cb);
+			}
+
+			Predicate idPredicate = cb.equal(root.get("id"), id);
+
+			return period == null || period == FilterPeriod.ALL 
+					? idPredicate 
+					: cb.and(idPredicate, periodoPredicate);
+		};
+
+//		return potRepository
+//				.findOne(spec)
+//				.orElseThrow(() -> new 
+//						ResourceNotFoundException("info pot not found"));
+
+        return potRepository.findAll(spec)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("info pot not found"));
+	
+	}
+
+	@Transactional
+	public Pot newPot(User user, PotDTO data) {
+
+		boolean existPot = user.getPots().stream().anyMatch(obj -> obj.getTitle().equals(data.title()));
+
+		if (existPot) {
+			throw new ResourceAlreadyExists("pot already exists in list");
+		}
+
+		Pot pot = new Pot(null, data.title(), data.description(), data.monthlyAmount(), data.color(),
+				new ArrayList<>());
+
+		UpdateDate update = new UpdateDate(null, Instant.now(), data.monthlyAmount());
+		update.setPot(pot);
+		pot.getUpdate().add(update);
+
+		pot.setUser(user);
+
+		Pot response = potRepository.save(pot);
+		user.getPots().add(response);
+
+		return response;
+	}
+
+	public Pot getIdPot(UUID id) {
+
+		if (id == null) {
+			throw new ResourceNotFoundException("id cannot be null");
+		}
+
+		Optional<Pot> potOptional = potRepository.findById(id);
+		Pot pot = potOptional.orElseThrow(() -> new ResourceNotFoundException("pot not found"));
+
+		return pot;
+	}
+
+	public Pot editPot(PotDTO data, UUID id) {
+
+		Optional<Pot> requestOptional = this.potRepository.findById(id);
+
+		Pot request = requestOptional.orElseThrow(() -> new ResourceNotFoundException("pot not found"));
+
+		if (!data.monthlyAmount().equals(request.getMonthlyAmount()) && data.monthlyAmount() != null) {
+
+			UpdateDate update = new UpdateDate(null, Instant.now(), data.monthlyAmount());
+			update.setPot(request);
+			request.getUpdate().add(update);
+
+			request.setMonthlyAmount(data.monthlyAmount());
+		}
+
+		String title = data.title() == null && data.title().equals("") ? request.getTitle() : data.title();
+
+		String description = data.description() == null || data.description().equals("") ? request.getTitle()
+				: data.title();
+
+		String color = data.color() == null || data.color().equals("") ? request.getColor() : data.color();
+
+		request.setTitle(title);
+		request.setDescription(description);
+		request.setColor(color);
+
+		Pot response = this.potRepository.save(request);
+
+		return response;
+	}
+
+	public void deletePot(UUID id) {
+
+		try {
+
+			Optional<Pot> requestOptional = potRepository.findById(id);
+			Pot request = requestOptional.orElseThrow(() -> new ResourceNotFoundException("pot not found"));
+
+			potRepository.delete(request);
+
+		} catch (Exception e) {
+
+			throw new ResourceNotFoundException("An unexpected error occurred while deleting pot");
+		}
+
+	}
+
+}

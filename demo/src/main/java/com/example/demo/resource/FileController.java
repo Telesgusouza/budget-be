@@ -31,7 +31,7 @@ public class FileController {
 
 	@Autowired
 	private S3Service s3Service;
-
+/*
 	@Operation(summary = "add new photo", description = "add photo or change user photo", responses = {
 
 			@ApiResponse(responseCode = "200", description = "photo added successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResultResponseDTO.class))),
@@ -102,5 +102,5 @@ public class FileController {
 		return ResponseEntity.status(200).body(response);
 
 	}
-
+*/
 }

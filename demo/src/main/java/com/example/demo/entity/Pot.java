@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -38,6 +41,9 @@ public class Pot implements Serializable {
 	@Column(nullable = false)
 	private Float monthlyAmount;
 
+	@Column(nullable = false)
+	private String color;
+
 	@OneToMany(mappedBy = "pot", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<UpdateDate> update = new ArrayList();
@@ -50,21 +56,24 @@ public class Pot implements Serializable {
 	public Pot() {
 	}
 
-	public Pot(UUID id, String title, String description, Float monthlyAmount, List<UpdateDate> update) {
+	public Pot(UUID id, String title, String description, Float monthlyAmount, String color, List<UpdateDate> update) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.monthlyAmount = monthlyAmount;
+		this.color = color;
 		this.update = update;
 	}
 
-	public Pot(UUID id, String title, String description, Float monthlyAmount, List<UpdateDate> update, User user) {
+	public Pot(UUID id, String title, String description, Float monthlyAmount, String color, List<UpdateDate> update,
+			User user) {
 		super();
 		this.id = id;
 		this.title = title;
 		this.description = description;
 		this.monthlyAmount = monthlyAmount;
+		this.color = color;
 		this.update = update;
 		this.user = user;
 	}
@@ -96,7 +105,7 @@ public class Pot implements Serializable {
 	public List<UpdateDate> getUpdate() {
 		return update;
 	}
-
+	
 	public void setUpdate(List<UpdateDate> update) {
 		this.update = update;
 	}
@@ -112,11 +121,19 @@ public class Pot implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
+	}
 
 	@Override
 	public String toString() {
 		return "Pot [id=" + id + ", title=" + title + ", description=" + description + ", monthlyAmount="
-				+ monthlyAmount + ", update=" + update + "]";
+				+ monthlyAmount + ", color=" + color + ", update=" + update + "]";
 	}
 
 	@Override

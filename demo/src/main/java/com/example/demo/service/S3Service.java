@@ -35,7 +35,7 @@ public class S3Service {
 		this.s3Cliente = s3Client;
 	}
 
-	public ResultResponseDTO upload(MultipartFile file, UUID filename, User user) {
+	/*public ResultResponseDTO upload(MultipartFile file, UUID filename, User user) {
 
 		String contentType = file.getContentType();
 
@@ -128,6 +128,6 @@ public class S3Service {
 		fos.close();
 
 		return convFile;
-	}
+	}*/
 
 }

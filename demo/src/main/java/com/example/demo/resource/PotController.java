@@ -10,11 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.PotDTO;
 import com.example.demo.dto.ResponseListPotDTO;
+import com.example.demo.dto.ResponsePotDTO;
 import com.example.demo.entity.Pot;
+import com.example.demo.entity.UpdateDate;
 import com.example.demo.entity.User;
+import com.example.demo.enums.FilterPeriod;
 import com.example.demo.resource.exception.StandardError;
 import com.example.demo.service.PotService;
 import com.example.demo.service.exception.AuthenticationFailed;
@@ -39,45 +43,22 @@ import jakarta.validation.constraints.Min;
 
 @Tag(name = "Pot", description = "related operations manipulate pot")
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(value = "/api/v1/pot")
 public class PotController {
 
 	@Autowired
 	private PotService potService;
 
-	@Operation(
-			summary = "add new pot",
-			description = "add a new pot to your pot list",
-			responses = {
-					
-					@ApiResponse(
-							responseCode = "201",
-							description = "success in adding new Pot",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = Pot.class))),
-					
-					@ApiResponse(
-							responseCode = "409",
-							description = "pot already exists in list",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "403",
-							description = "pot already exists in list",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),					
-					
-			})
+	@Operation(summary = "add new pot", description = "add a new pot to your pot list", responses = {
+
+			@ApiResponse(responseCode = "201", description = "success in adding new Pot", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pot.class))),
+
+			@ApiResponse(responseCode = "409", description = "pot already exists in list", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
 	@PostMapping
-	public ResponseEntity<Pot> addNewPot(@AuthenticationPrincipal User user, 
-			@RequestBody PotDTO data) {
+	public ResponseEntity<Pot> addNewPot(@AuthenticationPrincipal User user, @RequestBody PotDTO data) {
 
 		if (user == null) {
 			throw new AuthenticationFailed("invalid data");
@@ -88,48 +69,37 @@ public class PotController {
 		return ResponseEntity.status(201).body(response);
 	}
 
-	@Operation(
-			summary = "bring pot",
-			description = "recover pot through id",
-			responses = {
-					
-					@ApiResponse(
-							responseCode = "200",
-							description = "bringing pot through id",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = Pot.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "info pot not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "id cannot be null",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "pot not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-			})
-	@GetMapping("/{id}")
-	public ResponseEntity<Pot> getPot(@PathVariable UUID id) {
+	@Operation(summary = "list updates pot", description = "brings us a list of updates", responses = {
 
-		Pot pot = potService.getIdPot(id);
+			@ApiResponse(responseCode = "200", description = "List recovered successfully", content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class))),
+
+			@ApiResponse(responseCode = "400", description = "id cannot be null", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
+	@GetMapping("/{id}/updates")
+	public ResponseEntity<List<UpdateDate>> listUpdates(@PathVariable UUID id,
+			@RequestParam(required = false, defaultValue = "LAST_MONTH") FilterPeriod period) {
+
+		List<UpdateDate> list = potService.listUpdates(id, period);
+
+		return ResponseEntity.status(200).body(list);
+	}
+
+	@Operation(summary = "bring pot", description = "recover pot through id", responses = {
+
+			@ApiResponse(responseCode = "200", description = "bringing pot through id", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pot.class))),
+
+			@ApiResponse(responseCode = "400", description = "info pot not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "id cannot be null", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "pot not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
+	@GetMapping("/{id}")
+		public ResponseEntity<ResponsePotDTO> getPot(@PathVariable UUID id) {
+		
+		ResponsePotDTO pot = potService.getIdPot(id);
 
 		if (pot == null) {
 			throw new ResourceNotFoundException("info pot not found");
@@ -138,44 +108,19 @@ public class PotController {
 		return ResponseEntity.status(200).body(pot);
 	}
 
-	@Operation(
-			summary = "bring list of pots",
-			description = "Retrieves a list of traversable pots from the JWT token",
-			responses = {
-					
-					@ApiResponse(
-							responseCode = "200",
-							description = "Pots successfully recovered",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = ResponseListPotDTO.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "page number must be greater than 0",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "403",
-							description = "invalid data",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-			}
-			)
+	@Operation(summary = "bring list of pots", description = "Retrieves a list of traversable pots from the JWT token", responses = {
+
+			@ApiResponse(responseCode = "200", description = "Pots successfully recovered", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseListPotDTO.class))),
+
+			@ApiResponse(responseCode = "400", description = "page number must be greater than 0", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "403", description = "invalid data", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
 	@GetMapping
-	public ResponseEntity<ResponseListPotDTO> getAllPots(
-			@AuthenticationPrincipal User user,
+	public ResponseEntity<ResponseListPotDTO> getAllPots(@AuthenticationPrincipal User user,
 			@RequestParam(defaultValue = "0") @Min(1) int page,
 			@RequestParam(defaultValue = "10") @Max(15) @Min(1) int size) {
-
-		page -= 1;
 
 		if (page == -1) {
 			throw new ResourceNotFoundException("page number must be greater than 0");
@@ -187,40 +132,22 @@ public class PotController {
 
 		Pageable pageable = PageRequest.of(page, size, Sort.by("id"));
 
-		List<Pot> potList = user.getPots().stream().skip((long) page * size)
-				.limit(size).collect(Collectors.toList());
+		List<Pot> potList = user.getPots().stream().skip((long) page * size).limit(size).collect(Collectors.toList());
 
 		ResponseListPotDTO response = new ResponseListPotDTO(potList, page, size, user.getPots().size(),
-				(int) Math.ceil((double) user.getPots().size() / size), 
-				page * size < user.getPots().size());
+				(int) Math.ceil((double) user.getPots().size() / size), page * size < user.getPots().size());
 
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@Operation(
-			summary = "edit pot",
-			description = "operation responsible for editing a pot",
-			responses = {
-					
-					@ApiResponse(
-							responseCode = "200",
-							description = "bringing pot through id",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = Pot.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "pot not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),					
-					
-			}
-		)
-	@PatchMapping("/{id}")
+	@Operation(summary = "edit pot", description = "operation responsible for editing a pot", responses = {
+
+			@ApiResponse(responseCode = "200", description = "bringing pot through id", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Pot.class))),
+
+			@ApiResponse(responseCode = "400", description = "pot not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
+	@PutMapping("/{id}")
 	public ResponseEntity<Pot> editPot(@RequestBody PotDTO data, @PathVariable UUID id) {
 
 		Pot response = potService.editPot(data, id);
@@ -228,37 +155,15 @@ public class PotController {
 		return ResponseEntity.status(200).body(response);
 	}
 
-	@Operation(
-			summary = "delete pot",
-			description = "operation responsible for deleting a pot",
-			responses = {
-					
-					@ApiResponse(
-							responseCode = "204",
-							description = "successfully deleted",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = Void.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "pot not found",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-					@ApiResponse(
-							responseCode = "400",
-							description = "An unexpected error occurred while deleting pot",
-							content = @Content(
-									mediaType = "application/json",
-									schema = @Schema(
-											implementation = StandardError.class))),
-					
-			}
-		)
+	@Operation(summary = "delete pot", description = "operation responsible for deleting a pot", responses = {
+
+			@ApiResponse(responseCode = "204", description = "successfully deleted", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Void.class))),
+
+			@ApiResponse(responseCode = "400", description = "pot not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+			@ApiResponse(responseCode = "400", description = "An unexpected error occurred while deleting pot", content = @Content(mediaType = "application/json", schema = @Schema(implementation = StandardError.class))),
+
+	})
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePot(@PathVariable UUID id) {
 
@@ -268,55 +173,3 @@ public class PotController {
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

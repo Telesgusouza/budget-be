@@ -1,0 +1,179 @@
+package com.example.demo.service;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.test.context.TestPropertySource;
+
+import com.example.demo.dto.PotDTO;
+import com.example.demo.entity.Pot;
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.entity.User;
+import com.example.demo.enums.UserRole;
+import com.example.demo.repositories.PotRepository;
+import com.example.demo.repositories.UpdateDateRepository;
+import com.example.demo.repositories.UserRepository;
+import com.example.demo.service.exception.ResourceAlreadyExists;
+import com.example.demo.service.exception.ResourceNotFoundException;
+
+@TestPropertySource(properties = { "cloud.aws.credentials.accessKey=your-access-key",
+		"cloud.aws.credentials.secretKey=your-secret-key", "cloud.aws.region.static=us-east-1",
+		"cloud.aws.stack.auto=false", "cloud.aws.kms.enabled=false" })
+@AutoConfigureMockMvc
+@ExtendWith(MockitoExtension.class)
+public class PotServiceTest {
+
+	@Mock
+	private UserRepository userRepository;
+
+	@Mock
+	private PotRepository potRepository;
+
+	@Mock
+	private UpdateDateRepository updateDateRepository;
+
+	@InjectMocks
+	private PotService potService;
+
+	@DisplayName("I add new successfully")
+	@Test
+	public void iAddNewSuccessfully() {
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO(null, "title", "description", (float) 205.50, "color");
+
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color",new ArrayList<>());
+
+		pot.getUpdate().add(update);
+
+		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+
+		Pot request = potService.newPot(user, data);
+
+		assertNotNull(request);
+	}
+
+	@DisplayName("Pot already exists in list")
+	@Test
+	public void potAlreadyExistsInlist() {
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO(UUID.randomUUID(),"title", "description", (float) 205.50, "color");
+
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		pot.getUpdate().add(update);
+		user.getPots().add(pot);
+
+		assertThrows(ResourceAlreadyExists.class, () -> potService.newPot(user, data));
+
+	}
+
+	// getPot
+	@DisplayName("bringing Pot by id successfully")
+	@Test
+	public void bringingPotByidSuccessfully() {
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+
+		Pot requestPot = potService.getIdPot(pot.getId());
+
+		assertNotNull(requestPot);
+	}
+
+	@DisplayName("pot id cannot be null")
+	@Test
+	public void potIdCannotBeNull() {
+
+		assertThrows(ResourceNotFoundException.class, () -> potService.getIdPot(null));
+	}
+
+	@DisplayName("pot edited successfully without changing value")
+	@Test
+	public void potEditedSuccessfullyWithoutChangingValue() {
+		PotDTO data = new PotDTO(UUID.randomUUID(), "edit", "edit", (float) 205.50, "color");
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+
+		Pot response = potService.editPot(data, pot.getId());
+
+		assertNotNull(response);
+		assertEquals(data.title(), response.getTitle());
+	}
+
+	@DisplayName("pot edited successfully changing value")
+	@Test
+	public void potEditedSuccessfullyChangingValue() {
+		PotDTO data = new PotDTO(UUID.randomUUID(), "edit", "edit", (float) 206.50, "color");
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+		when(potRepository.save(any(Pot.class))).thenReturn(pot);
+
+		Pot response = potService.editPot(data, pot.getId());
+
+		assertNotNull(response);
+		assertNotNull(response.getUpdate().size() > 0);
+		assertEquals(data.title(), response.getTitle());
+		assertEquals(response.getUpdate().get(0).getValue(), data.monthlyAmount());
+	}
+
+	// delete pot
+	@DisplayName("deleting pot successfully")
+	@Test
+	public void deletingPotSuccessfully() {
+
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
+		PotDTO data = new PotDTO(UUID.randomUUID(),"title", "description", (float) 205.50, "color");
+
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), data.monthlyAmount());
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		pot.getUpdate().add(update);
+		user.getPots().add(pot);
+
+		when(potRepository.findById(pot.getId())).thenReturn(Optional.of(pot));
+		doNothing().when(potRepository).delete(any(Pot.class));
+
+		potService.deletePot(pot.getId());
+		verify(potRepository).delete(pot);
+	}
+
+	@DisplayName("pot not found")
+	@Test
+	public void potNotFound() {
+		UpdateDate update = new UpdateDate(UUID.randomUUID(), Instant.now(), (float) 205.50);
+		Pot pot = new Pot(UUID.randomUUID(), "title", "description", (float) 205.50, "color", new ArrayList<>());
+
+		when(potRepository.findById(pot.getId())).thenReturn(null);
+
+		assertThrows(ResourceNotFoundException.class, () -> potService.deletePot(pot.getId()));
+	}
+
+	@DisplayName("unexpected error deleting pot")
+	@Test
+	public void unexpectedErrorDeletingPot() {
+		assertThrows(ResourceNotFoundException.class, () -> potService.deletePot(null));
+	}
+
+}

@@ -1,0 +1,60 @@
+package com.example.demo.service;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.example.demo.entity.UpdateDate;
+import com.example.demo.enums.FilterPeriod;
+
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+public class UpdateDateSpecification implements Specification<UpdateDate> {
+    private static final long serialVersionUID = -8483922191750699687L;
+    
+	private static final long MONTHS_6 = 183L; // aproximadamente 6 meses em dias
+    private static final long YEAR = 365L;
+
+    private FilterPeriod period;
+    private Instant now;
+
+    public UpdateDateSpecification(FilterPeriod period) {
+        this.period = period;
+        this.now = Instant.now();
+    }
+
+    @Override
+    public Predicate toPredicate(Root<UpdateDate> root, 
+                               CriteriaQuery<?> query, 
+                               CriteriaBuilder cb) {
+        Expression<Instant> dataExpression = root.get("date");
+        
+        switch (period) {
+            case LAST_MONTH:
+                return cb.between(dataExpression, 
+                    now.minus(30, ChronoUnit.DAYS),
+                    now);
+                
+            case LAST_6_MONTHS:
+                return cb.between(dataExpression,
+                    now.minus(MONTHS_6, ChronoUnit.DAYS),
+                    now);
+                
+            case LAST_YEAR:
+                return cb.between(dataExpression,
+                    now.minus(YEAR, ChronoUnit.DAYS),
+                    now);
+                
+            case ALL:
+                return cb.conjunction();
+                
+            default:
+                return cb.conjunction();
+        }
+    }
+}

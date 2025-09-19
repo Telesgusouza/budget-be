@@ -33,8 +33,8 @@ public class User implements UserDetails, Serializable {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private UUID id;
 
-	@Column(nullable = false)
-	private String img;
+//	@Column(nullable = false)
+//	private String img;
 
 	@Column(nullable = false)
 	private String login;
@@ -70,36 +70,19 @@ public class User implements UserDetails, Serializable {
 	public User() {
 	}
 
-	public User(UUID id, String img, String login, String password, String name, UserRole role) {
+	public User(UUID id, String login, String password, String name, UserRole role) {
 		super();
 		this.id = id;
-		this.img = img;
 		this.login = login;
 		this.password = password;
 		this.name = name;
 		this.role = role;
 	}
 
-//	public User(UUID id, String img, String login, String password, String name, UserRole role,
-//			List<Transaction> transaction, List<Pot> pots, Account account, Budget budget) {
-//		super();
-//		this.id = id;
-//		this.img = img;
-//		this.login = login;
-//		this.password = password;
-//		this.name = name;
-//		this.role = role;
-//		this.transaction = transaction;
-//		this.pots = pots;
-//		this.account = account;
-//		this.budget = budget;
-//	}
-
-	public User(UUID id, String img, String login, String password, String name, UserRole role, List<Pot> pots,
+	public User(UUID id, String login, String password, String name, UserRole role, List<Pot> pots,
 			List<Friend> friends) {
 		super();
 		this.id = id;
-		this.img = img;
 		this.login = login;
 		this.password = password;
 		this.name = name;
@@ -141,14 +124,6 @@ public class User implements UserDetails, Serializable {
 		this.id = id;
 	}
 
-	public String getImg() {
-		return img;
-	}
-
-	public void setImg(String img) {
-		this.img = img;
-	}
-
 	public UserRole getRole() {
 		return role;
 	}
@@ -156,14 +131,6 @@ public class User implements UserDetails, Serializable {
 	public void setRole(UserRole role) {
 		this.role = role;
 	}
-//
-//	public List<Transaction> getTransaction() {
-//		return transaction;
-//	}
-//
-//	public void setTransaction(List<Transaction> transaction) {
-//		this.transaction = transaction;
-//	}
 
 	public List<Pot> getPots() {
 		return pots;
@@ -213,13 +180,6 @@ public class User implements UserDetails, Serializable {
 		this.friends = friends;
 	}
 
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", img=" + img + ", login=" + login + ", password=" + password + ", name=" + name
-//				+ ", role=" + role + ", transaction=" + transaction + ", pots=" + pots + ", friends=" + friends
-//				+ ", account=" + account + ", budget=" + budget + "]";
-//	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -227,8 +187,8 @@ public class User implements UserDetails, Serializable {
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", img=" + img + ", login=" + login + ", password=" + password + ", name=" + name
-				+ ", role=" + role + "]";
+		return "User [id=" + id + ", login=" + login + ", password=" + password + ", name=" + name + ", role=" + role
+				+ "]";
 	}
 
 	@Override

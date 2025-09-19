@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="RequestBody"/>
+		<item key="selection" value=""/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="RequestBody"/>
-			<item value="AuthenticationFailed"/>
+			<item value="getupdate"/>
+			<item value="aqui"/>
+			<item value="estou"/>
+			<item value="@RequestParam"/>
+			<item value="TODOS"/>
+			<item value="PeriodoFiltro"/>
+			<item value="periodo "/>
+			<item value="periodo"/>
+			<item value="updateSpec"/>
+			<item value="Instant"/>
+			<item value="info"/>
+			<item value="add"/>
 			<item value="ResourceNotFoundException"/>
-			<item value="ResourceAlreadyExists"/>
-			<item value="any"/>
-			<item value="ArrayList"/>
-			<item value="FriendDTO"/>
-			<item value="dto"/>
-			<item value="page"/>
-			<item value="getpo"/>
-			<item value="getf"/>
-			<item value="setpo"/>
-			<item value="setfri"/>
-			<item value="getUpdate"/>
-			<item value="getAllInfoUser"/>
+			<item value="edit"/>
+			<item value="&quot;all-info&quot;"/>
 		</list>
 		<list key="replacehistory">
 			<item value=""/>
+			<item value="ALL"/>
+			<item value="FilterPeriod"/>
+			<item value="period"/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="1044"/>
-		<item key="DIALOG_Y_ORIGIN" value="550"/>
+		<item key="DIALOG_X_ORIGIN" value="848"/>
+		<item key="DIALOG_Y_ORIGIN" value="341"/>
 		<item key="DIALOG_WIDTH" value="335"/>
 		<item key="DIALOG_HEIGHT" value="446"/>
 		<item key="DIALOG_FONT_NAME" value="1|Ubuntu|10.0|0|GTK|1|"/>

@@ -87,7 +87,7 @@ public class AuthorizationServiceTest {
 	public void loggedInSuccessfully() {
 		String token = "my-token-123";
 		AuthenticationDTO dataUser = new AuthenticationDTO("test@test.com", "111111");
-		User user = new User(UUID.randomUUID(), "", "test@gmail.com", "111111", "test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "111111", "test", UserRole.USER);
 
 		var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -106,7 +106,7 @@ public class AuthorizationServiceTest {
 	public void incorrectPassword() {
 		String token = "my-token-123";
 		AuthenticationDTO dataUser = new AuthenticationDTO("test_err@test.com", "111111");
-		User user = new User(UUID.randomUUID(), "", "test@gmail.com", "111111", "test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "111111", "test", UserRole.USER);
 
 		var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -121,7 +121,7 @@ public class AuthorizationServiceTest {
 	public void accountDeactivatedOrBlocked() {
 		String token = "my-token-123";
 		AuthenticationDTO dataUser = new AuthenticationDTO("test_err@test.com", "111111");
-		User user = new User(UUID.randomUUID(), "", "test@gmail.com", "111111", "test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "111111", "test", UserRole.USER);
 
 		var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -136,7 +136,7 @@ public class AuthorizationServiceTest {
 	@DisplayName("Registered successfully")
 	public void registeredSuccessfully() {
 		RegisterDTO data = new RegisterDTO("test@gmail.com", "111111", "test_name");
-		User user = new User(UUID.randomUUID(), "", "test@gmail.com", "111111", "test_name", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "111111", "test_name", UserRole.USER);
 		String token = "my_token_123";
 
 		when(userRepository.findByLogin(data.login())).thenReturn(null);
@@ -175,7 +175,7 @@ public class AuthorizationServiceTest {
 	@DisplayName("delete user")
 	@Test
 	public void deleteUser() {
-		User user = new User(UUID.randomUUID(), "photo", "test@gmail.com", "password_123", "name_test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name_test", UserRole.USER);
 
 		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 		doNothing().when(userRepository).delete(any(User.class));
@@ -188,7 +188,7 @@ public class AuthorizationServiceTest {
 	@DisplayName("user not found")
 	@Test
 	public void userNotFound() {
-		User user = new User(UUID.randomUUID(), "photo", "test@gmail.com", "password_123", "name_test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name_test", UserRole.USER);
 
 		when(userRepository.findById(user.getId())).thenThrow(ResourceNotFoundException.class);
 
@@ -199,12 +199,12 @@ public class AuthorizationServiceTest {
 	@DisplayName("User edited successfully")
 	@Test
 	public void userEditedSuccessfully() {
-		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
-		User newUser = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "teste_new_name",
+		User user = new User(UUID.randomUUID(), "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		User newUser = new User(UUID.randomUUID(), "teste@gmail.com", "password_123", "teste_new_name",
 				UserRole.USER);
 		EditUserDTO dataUser = new EditUserDTO("teste_new_name");
 
-		ResponseUserDTO data = new ResponseUserDTO(newUser.getId(), newUser.getImg(), newUser.getUsername(),
+		ResponseUserDTO data = new ResponseUserDTO(newUser.getId(), newUser.getUsername(),
 				newUser.getName());
 
 		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -218,7 +218,7 @@ public class AuthorizationServiceTest {
 	@DisplayName("returns error with name same as previous")
 	@Test
 	public void returnsErrorWithNameSameAsPrevious() {
-		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "teste@gmail.com", "password_123", "name_test", UserRole.USER);
 		EditUserDTO dataUser = new EditUserDTO("name_test");
 
 		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -230,7 +230,7 @@ public class AuthorizationServiceTest {
 	@DisplayName("error because the name is not null")
 	@Test
 	public void errorBecausethenameisnotnull() {
-		User user = new User(UUID.randomUUID(), "photo", "teste@gmail.com", "password_123", "name_test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "teste@gmail.com", "password_123", "name_test", UserRole.USER);
 		EditUserDTO dataUser = new EditUserDTO(null);
 
 		when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));

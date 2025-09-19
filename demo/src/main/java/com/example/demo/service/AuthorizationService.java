@@ -1,8 +1,11 @@
 package com.example.demo.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,8 +24,13 @@ import com.example.demo.config.TokenService;
 import com.example.demo.dto.AuthenticationDTO;
 import com.example.demo.dto.EditPasswordDTO;
 import com.example.demo.dto.EditUserDTO;
+import com.example.demo.dto.PotDTO;
 import com.example.demo.dto.RegisterDTO;
+import com.example.demo.dto.ReponseAllInfoUser;
 import com.example.demo.dto.ResponseUserDTO;
+import com.example.demo.entity.Budget;
+import com.example.demo.entity.Friend;
+import com.example.demo.entity.Pot;
 import com.example.demo.entity.User;
 import com.example.demo.enums.UserRole;
 import com.example.demo.repositories.UserRepository;
@@ -31,6 +39,8 @@ import com.example.demo.service.exception.ExceptionOfExistingEmail;
 import com.example.demo.service.exception.InvalidField;
 import com.example.demo.service.exception.ResourceNotFoundException;
 import com.example.demo.service.exception.TicketError;
+
+import jakarta.mail.AuthenticationFailedException;
 
 @Service
 public class AuthorizationService implements UserDetailsService {
@@ -57,9 +67,16 @@ public class AuthorizationService implements UserDetailsService {
 	}
 
 	public String login(AuthenticationDTO data) {
+		boolean existUser = this.userRepository.existsByLogin(data.login());
+
+		if (!existUser) {
+			throw new AuthenticationFailed("Account does not exist");
+		}
+
 		var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
 
 		try {
+
 			var auth = this.authenticationManager.authenticate(usernamePassword);
 			var token = tokenService.generateToken((User) auth.getPrincipal());
 
@@ -72,17 +89,20 @@ public class AuthorizationService implements UserDetailsService {
 
 			throw new AuthenticationFailed("Account deactivated or blocked");
 		} catch (DisabledException e) { // AWS KMS exception
-	        throw new AuthenticationFailed("Account deactivated or blocked");
-	    }
+			throw new AuthenticationFailed("Account deactivated or blocked");
+		}
+
 	}
 
 	public String register(RegisterDTO data) {
+		
+		boolean existUser = this.userRepository.existsByLogin(data.login());
 
-		if (this.userRepository.findByLogin(data.login()) != null) {
-
+		if (existUser) {
 			throw new ExceptionOfExistingEmail("User already exists");
 		}
-		if (data.password().length() < 6) {
+		
+		if (data.password().length() < 7) {
 
 			throw new InvalidField("invalid password");
 		}
@@ -92,12 +112,11 @@ public class AuthorizationService implements UserDetailsService {
 		if (!emailPattern.matcher(data.login()).find()) {
 
 			throw new InvalidField("invalid email");
-		}
-		;
+		};
 
 		String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 
-		User newUser = new User(null, "", data.login(), encryptedPassword, data.name(), UserRole.USER);
+		User newUser = new User(null, data.login(), encryptedPassword, data.name(), UserRole.USER);
 		User user = this.userRepository.save(newUser);
 
 		var token = tokenService.generateToken(user);
@@ -120,6 +139,40 @@ public class AuthorizationService implements UserDetailsService {
 		}
 	}
 
+	public ReponseAllInfoUser infoAllUser(User user) {
+				
+		List<Pot> requestPots = user.getPots().stream().limit(5).collect(Collectors.toList());
+		List<PotDTO> pots = new ArrayList<>();
+		
+		Double totalPots = user.getPots().stream().mapToDouble(Pot::getMonthlyAmount).sum();
+		
+		for (Pot pot : requestPots) {
+			
+			PotDTO data = new PotDTO(pot.getId(), pot.getTitle(), pot.getDescription(), pot.getMonthlyAmount(), pot.getColor());
+			pots.add(data);
+			
+		}
+		
+		List<Friend> friends = user.getFriends().stream().limit(5).collect(Collectors.toList());
+		List<Budget> budgets =  user.getBudget().stream().limit(5).collect(Collectors.toList());
+		
+		ReponseAllInfoUser data = new ReponseAllInfoUser(
+				user.getId(), 
+				user.getUsername(),
+				user.getName(),
+				
+				totalPots,
+				
+				pots,
+				friends,
+				budgets
+				);
+		
+		return data;
+		
+	}
+	
+
 	public ResponseUserDTO editUser(EditUserDTO data, UUID id) {
 		Optional<User> optionalUser = this.userRepository.findById(id);
 		User user = optionalUser.orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -135,7 +188,7 @@ public class AuthorizationService implements UserDetailsService {
 		}
 
 		User userEdit = this.userRepository.save(user);
-		return new ResponseUserDTO(id, userEdit.getImg(), userEdit.getUsername(), userEdit.getName());
+		return new ResponseUserDTO(id, userEdit.getUsername(), userEdit.getName());
 
 	}
 

@@ -55,7 +55,7 @@ public class BudgetServiceTest {
 	@DisplayName("new budget added successfully")
 	@Test
 	public void newBudgetAddedSuccessfully() {
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 		user.setBudget(new ArrayList<>());
 		BudgetDTO data = new BudgetDTO("title", "description", (float) 205.45);
 
@@ -74,7 +74,7 @@ public class BudgetServiceTest {
 	@DisplayName("budget already exists in list")
 	@Test
 	public void budgetAlreadyExistsInList() {
-		User user = new User(UUID.randomUUID(), "img", "test@gmail.com", "password_123", "name test", UserRole.USER);
+		User user = new User(UUID.randomUUID(), "test@gmail.com", "password_123", "name test", UserRole.USER);
 		user.setBudget(new ArrayList<>());
 		BudgetDTO data = new BudgetDTO("title", "description", (float) 205.45);
 

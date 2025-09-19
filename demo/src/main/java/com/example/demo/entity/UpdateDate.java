@@ -83,6 +83,8 @@ public class UpdateDate implements Serializable {
 	public void setBudget(Budget budget) {
 		this.budget = budget;
 	}
+	
+	
 
 	@Override
 	public String toString() {

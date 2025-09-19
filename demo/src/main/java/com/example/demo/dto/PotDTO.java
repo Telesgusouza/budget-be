@@ -1,5 +1,8 @@
 package com.example.demo.dto;
 
-public record PotDTO(String title, String description, Float monthlyAmount) {
+import java.util.UUID;
+
+public record PotDTO(UUID id, String title, String description, 
+		Float monthlyAmount, String color) {
 
 }
